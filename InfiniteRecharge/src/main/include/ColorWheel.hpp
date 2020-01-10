@@ -23,4 +23,5 @@ class ColorManager {
  public:
     ColorManager();
     void manualSpin();
+    void colorFinder();
 };

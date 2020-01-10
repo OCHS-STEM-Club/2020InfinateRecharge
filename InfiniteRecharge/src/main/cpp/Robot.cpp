@@ -17,12 +17,13 @@ Robot::Robot() {
   colorManager = new ColorManager();
 }  
 
+frc::Joystick *stick;
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-  
+  stick = new frc::Joystick{1};
 }
 
 /**
@@ -70,7 +71,14 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
-  colorManager->manualSpin();
+  
+
+  if (stick->GetRawButton(1)) {
+    colorManager->colorFinder();
+  }
+  else {
+    colorManager->manualSpin();
+  }
 }
 
 void Robot::TestPeriodic() {}

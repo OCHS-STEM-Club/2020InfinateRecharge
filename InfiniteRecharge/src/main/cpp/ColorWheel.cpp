@@ -35,10 +35,10 @@ double deadband(double joystickValue, double deadbandValue) {
 
 void ColorManager::manualSpin() {
     xStickValue = stick->GetRawAxis(1);
-    xStickValue = deadband(xStickValue,0.05);
+    //xStickValue = deadband(xStickValue,0.5);
 
     spinMotor->Set(xStickValue);
-    frc::SmartDashboard::PutNumber("spin motor roations", spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096);
+    frc::SmartDashboard::PutNumber("spin motor roations", spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0);
 
 
     frc::Color detectedColor = m_colorSensor.GetColor();
@@ -71,4 +71,31 @@ void ColorManager::manualSpin() {
   frc::SmartDashboard::PutNumber("Blue", detectedColor.blue);
   frc::SmartDashboard::PutNumber("Confidence", confidence);
   frc::SmartDashboard::PutString("Detected Color", colorString);
+}
+
+void ColorManager::colorFinder() {
+  frc::Color detectedColor = m_colorSensor.GetColor();
+
+  /**
+   * Run the color match algorithm on our detected color
+   */
+  std::string colorString;
+  double confidence = 0.0;
+  frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
+
+  if (matchedColor == kBlueTarget) {
+    colorString = "Blue";
+  } else if (matchedColor == kRedTarget) {
+    colorString = "Red";
+  } else if (matchedColor == kGreenTarget) {
+    colorString = "Green";
+  } else if (matchedColor == kYellowTarget) {
+    colorString = "Yellow";
+  } else {
+    colorString = "Unknown";
+  }
+
+  if (colorString != "Red") {
+    spinMotor->Set(0.1);
+  }
 }
