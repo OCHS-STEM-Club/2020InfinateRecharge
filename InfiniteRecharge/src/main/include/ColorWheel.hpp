@@ -17,7 +17,7 @@ class ColorManager {
   static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
   static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113); */
 
-   static constexpr frc::Color kBlueTarget = frc::Color(0.251, 0.473, 0.276);
+  static constexpr frc::Color kBlueTarget = frc::Color(0.251, 0.473, 0.276);
   static constexpr frc::Color kGreenTarget = frc::Color(0.297, 0.545, 0.158);
   static constexpr frc::Color kRedTarget = frc::Color(0.616, 0.318, 0.067);
   static constexpr frc::Color kYellowTarget = frc::Color(0.446, 0.480, 0.074);

@@ -14,8 +14,12 @@
 
 #include <frc/WPILib.h>
 
-#include <ColorWheel.hpp>
-#include <Drive.hpp>
+#include "frc/smartdashboard/Smartdashboard.h"
+#include "networktables/NetworkTable.h"
+#include "networktables/NetworkTableInstance.h"
+
+//#include <ColorWheel.hpp>
+//#include <Drive.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -34,6 +38,6 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  ColorManager *colorManager;
-  DriveManager *driveManager;
+  //ColorManager *colorManager;
+  //DriveManager *driveManager;
 };
