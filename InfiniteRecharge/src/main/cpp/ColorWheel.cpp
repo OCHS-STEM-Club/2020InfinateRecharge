@@ -9,7 +9,9 @@ ColorManager::ColorManager () {
     stick = new frc::Joystick{0};
     spinMotor = new WPI_TalonSRX(1);
     spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
-
+    currentColor = " ";
+    colorCount = 0;
+    encStartRot = 0;
 }
 
 int Sign(double input) {
@@ -74,6 +76,8 @@ void ColorManager::manualSpin() {
 }
 
 void ColorManager::colorFinder() {
+  gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+
   frc::Color detectedColor = m_colorSensor.GetColor();
 
   /**
@@ -84,18 +88,84 @@ void ColorManager::colorFinder() {
   frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
 
   if (matchedColor == kBlueTarget) {
-    colorString = "Blue";
+    colorString = "B";
   } else if (matchedColor == kRedTarget) {
-    colorString = "Red";
+    colorString = "R";
   } else if (matchedColor == kGreenTarget) {
-    colorString = "Green";
+    colorString = "G";
   } else if (matchedColor == kYellowTarget) {
-    colorString = "Yellow";
+    colorString = "Y";
   } else {
     colorString = "Unknown";
   }
 
-  if (colorString != "Red") {
-    spinMotor->Set(0.1);
+  frc::SmartDashboard::PutString("Detected Color", colorString);
+
+  if (colorString != gameData) {
+    spinMotor->Set(0.2);
+  }
+  else {
+    spinMotor->Set(0);
+  }
+  
+}
+
+void ColorManager::countSpins() {
+
+  frc::Color detectedColor = m_colorSensor.GetColor();
+
+  /**
+   * Run the color match algorithm on our detected color
+   */
+  std::string colorString;
+  double confidence = 0.0;
+  frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
+
+  if (matchedColor == kBlueTarget) {
+    colorString = "B";
+  } else if (matchedColor == kRedTarget) {
+    colorString = "R";
+  } else if (matchedColor == kGreenTarget) {
+    colorString = "G";
+  } else if (matchedColor == kYellowTarget) {
+    colorString = "Y";
+  } else {
+    colorString = "Unknown";
+  }
+
+  if (currentColor != colorString) {
+    currentColor = colorString;
+    if (currentColor == "Y") {
+      colorCount++;
+    }
+  }
+
+  if (stick->GetRawButton(10)) {
+    colorCount = 0;
+  }
+
+  if (colorCount < 7) {
+    spinMotor->Set(0.4);
+  }
+  else {
+    spinMotor->Set(0);
+  }
+
+  frc::SmartDashboard::PutString("Detected Color", colorString);
+}
+
+void ColorManager::countSpinsEnc(){
+  currentEncRot = spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0;
+  frc::SmartDashboard::PutNumber("spin motor roations", currentEncRot);
+  if (stick->GetRawButton(9)){
+    encStartRot = currentEncRot;
+    encEndRot = encStartRot + (3.5 * (1/COLORWHEELRATIO));
+  }
+
+  if (currentEncRot < encEndRot){
+    spinMotor->Set(-0.2);
+  }
+  else {
+    spinMotor->Set(0);
   }
 }

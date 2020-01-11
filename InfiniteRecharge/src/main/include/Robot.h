@@ -15,6 +15,7 @@
 #include <frc/WPILib.h>
 
 #include <ColorWheel.hpp>
+#include <Drive.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -34,4 +35,5 @@ class Robot : public frc::TimedRobot {
   std::string m_autoSelected;
 
   ColorManager *colorManager;
+  DriveManager *driveManager;
 };
