@@ -15,11 +15,10 @@
 #include <frc/WPILib.h>
 
 #include "frc/smartdashboard/Smartdashboard.h"
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableInstance.h"
 
 //#include <ColorWheel.hpp>
 //#include <Drive.hpp>
+#include <vision.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -40,4 +39,5 @@ class Robot : public frc::TimedRobot {
 
   //ColorManager *colorManager;
   //DriveManager *driveManager;
+  VisionManager *visionManager;
 };

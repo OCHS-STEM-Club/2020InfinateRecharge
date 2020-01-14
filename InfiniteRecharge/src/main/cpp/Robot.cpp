@@ -8,7 +8,6 @@
 #include "Robot.h"
 
 #include <iostream>
-#include <ColorWheel.hpp>
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -16,11 +15,10 @@
 Robot::Robot() {
   //colorManager = new ColorManager();
   //driveManager = new DriveManager();
+  visionManager = new VisionManager();
 }  
 
 frc::Joystick *stick;
-bool imageToggle = true;
-bool imageSwitch = true;
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -91,34 +89,8 @@ void Robot::TeleopPeriodic() {
     colorManager->manualSpin();
   }*/
 
-  std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
-  double targetOffsetAngle_Horizontal = table->GetNumber("tx",0.0);
-  double targetOffsetAngle_Vertical = table->GetNumber("ty",0.0);
-  double targetArea = table->GetNumber("ta",0.0);
-  //double targetSkew = table->GetNumber("ts",0.0);
-  double targetSkew = nt::NetworkTableInstance::GetDefault().GetTable("limelight")->GetNumber("ts",0.0);
-
-  frc::SmartDashboard::PutNumber("tx", targetOffsetAngle_Horizontal);
-  frc::SmartDashboard::PutNumber("ty", targetOffsetAngle_Vertical);
-  frc::SmartDashboard::PutNumber("ta", targetArea);
-  frc::SmartDashboard::PutNumber("ts", targetSkew);
-
-  if (stick->GetRawButton(4) && imageToggle) {
-    imageSwitch = !imageSwitch;
-    imageToggle = false;
-  }
-  else if (!stick->GetRawButton(4)) {
-    imageToggle = true;
-  }
-
-  if (imageSwitch) {
-    table->PutNumber("camMode", 0);
-    table->PutNumber("ledMode", 3);
-  }
-  else {
-    table->PutNumber("camMode", 1);
-    table->PutNumber("ledMode", 1);
-  }
+  visionManager->track();
+  visionManager->distance();
   
 }
 
