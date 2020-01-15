@@ -12,6 +12,14 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 
+#include <frc/WPILib.h>
+
+#include "frc/smartdashboard/Smartdashboard.h"
+
+//#include <ColorWheel.hpp>
+//#include <Drive.hpp>
+#include <vision.hpp>
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
@@ -21,10 +29,15 @@ class Robot : public frc::TimedRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
+  Robot();
 
  private:
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
+
+  //ColorManager *colorManager;
+  //DriveManager *driveManager;
+  VisionManager *visionManager;
 };

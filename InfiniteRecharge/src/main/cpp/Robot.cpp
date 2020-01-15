@@ -10,30 +10,23 @@
 #include <iostream>
 
 #include <frc/smartdashboard/SmartDashboard.h>
-#include "rev/ColorSensorV3.h"
-#include "rev/ColorMatch.h"
 
-  rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
-  rev::ColorMatch m_colorMatcher;
-  static constexpr frc::Color kBlueTarget = frc::Color(0.143, 0.427, 0.429);
-  static constexpr frc::Color kGreenTarget = frc::Color(0.197, 0.561, 0.240);
-  static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
-  static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113);
 
-  
+Robot::Robot() {
+  //colorManager = new ColorManager();
+  //driveManager = new DriveManager();
+  visionManager = new VisionManager();
+}  
 
+frc::Joystick *stick;
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
+  stick = new frc::Joystick{0};
 
-  m_colorMatcher.AddColorMatch(kBlueTarget);
-  m_colorMatcher.AddColorMatch(kGreenTarget);
-  m_colorMatcher.AddColorMatch(kRedTarget);
-  m_colorMatcher.AddColorMatch(kYellowTarget);
 
-  
 }
 
 /**
@@ -81,37 +74,24 @@ void Robot::AutonomousPeriodic() {
 void Robot::TeleopInit() {}
 
 void Robot::TeleopPeriodic() {
-    frc::Color detectedColor = m_colorSensor.GetColor();
-
-  /**
-   * Run the color match algorithm on our detected color
-   */
-  std::string colorString;
-  double confidence = 0.0;
-  frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
-
-  if (matchedColor == kBlueTarget) {
-    colorString = "Blue";
-  } else if (matchedColor == kRedTarget) {
-    colorString = "Red";
-  } else if (matchedColor == kGreenTarget) {
-    colorString = "Green";
-  } else if (matchedColor == kYellowTarget) {
-    colorString = "Yellow";
-  } else {
-    colorString = "Unknown";
+  
+/*
+  if (stick->GetRawButton(12)) {
+    colorManager->colorFinder();
   }
+  else if (stick->GetRawButton(11)) {
+    colorManager->countSpins();
+  }
+  else if (stick->GetRawButton(8)){
+    colorManager->countSpinsEnc();
+  }
+  else {
+    colorManager->manualSpin();
+  }*/
 
-  /**
-   * Open Smart Dashboard or Shuffleboard to see the color detected by the 
-   * sensor.
-   */
-  frc::SmartDashboard::PutNumber("Red", detectedColor.red);
-  frc::SmartDashboard::PutNumber("Green", detectedColor.green);
-  frc::SmartDashboard::PutNumber("Blue", detectedColor.blue);
-  frc::SmartDashboard::PutNumber("Confidence", confidence);
-  frc::SmartDashboard::PutString("Detected Color", colorString);
-
+  visionManager->track();
+  visionManager->distance();
+  
 }
 
 void Robot::TestPeriodic() {}
