@@ -24,4 +24,5 @@ class DriveManager {
     public:
     DriveManager();
     void drive();
+    void subclassTurn(double turnValue);
 }; 

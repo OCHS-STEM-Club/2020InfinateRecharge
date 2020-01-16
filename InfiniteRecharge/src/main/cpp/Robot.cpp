@@ -89,7 +89,7 @@ void Robot::TeleopPeriodic() {
     colorManager->manualSpin();
   }*/
 
-  visionManager->track();
+  visionManager->display();
   visionManager->distance();
   
 }

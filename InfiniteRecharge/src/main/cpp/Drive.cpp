@@ -23,6 +23,36 @@ DriveManager::DriveManager () {
     stick = new frc::Joystick{0};
 }
 
+double absDouble (double x) {
+  if (x < 0) {
+    return -x;
+  }
+  else {
+    return x;
+  }
+}
+
+int Sign(double input) {
+    if (input > 0) {
+        return 1;
+    }
+    else if (input < 0) {
+        return -1;
+    }
+    else if (input == 0) {
+        return 0;
+    }
+}
+
+double deadband(double joystickValue, double deadbandValue) {
+    if(absDouble(joystickValue) < 0.2){
+        return 0;
+    }
+    else{
+        return (1 / (1 - deadbandValue)) * (joystickValue + (-Sign(joystickValue) * deadbandValue));
+    } 
+}
+
 void DriveManager::drive() {
     xStickValue = stick->GetRawAxis(1);
     yStickValue = stick->GetRawAxis(2);
@@ -31,4 +61,8 @@ void DriveManager::drive() {
 
     frc::SmartDashboard::PutNumber("left encoder", leftDriveEnc->GetPosition());
     frc::SmartDashboard::PutNumber("right encoder", rightDriveEnc->GetPosition());
+}
+
+void DriveManager::subclassTurn(double turnValue) {
+    robotDrive->ArcadeDrive(0, turnValue);
 }

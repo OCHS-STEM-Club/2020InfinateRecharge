@@ -14,7 +14,7 @@ ColorManager::ColorManager () {
     encStartRot = 0;
 }
 
-int Sign(double input) {
+/*int Sign(double input) {
     if (input > 0) {
         return 1;
     }
@@ -33,7 +33,7 @@ double deadband(double joystickValue, double deadbandValue) {
     else{
         return (1 / (1 - deadbandValue)) * (joystickValue + (-Sign(joystickValue) * deadbandValue));
     } 
-}
+}*/
 
 void ColorManager::manualSpin() {
     xStickValue = stick->GetRawAxis(1);

@@ -1,11 +1,14 @@
 #pragma once
 
 #include <frc/WPILib.h>
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableInstance.h"
-//#include <math.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
 
-#define AREADISTANCERATIO 4.1823379 //2.11249
+#include <Drive.hpp>
+
+#define AREA_DISTANCE_RATIO 4.1823379 //2.11249
+#define MAX_STEER 0.3 // the maximum value sent to steer the robot
+#define STEER_K 0.05
 
 class VisionManager {
 private:
@@ -17,8 +20,13 @@ bool imageSwitch = true;
 double rawDistance;
 double distanceFlat;
 
+double turnOutput;
+
+DriveManager *driveManager;
+
 public:
     VisionManager();
-    void track();
+    void display();
     void distance();
+    void trackTurn();
 };
