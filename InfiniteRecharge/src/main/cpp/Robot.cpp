@@ -7,7 +7,7 @@
 
 #include "Robot.h"
 
-#include <iostream>
+#include <iostream> //Includes a prepopulated iostream include
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
@@ -18,7 +18,7 @@ Robot::Robot() {
   visionManager = new VisionManager();
 }  
 
-frc::Joystick *stick;
+frc::Joystick *stick; //Initialzing the joystick
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);

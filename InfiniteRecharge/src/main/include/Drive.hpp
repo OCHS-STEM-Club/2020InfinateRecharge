@@ -1,11 +1,11 @@
-#pragma once
+#pragma once //runs only once
 
 #include <frc/WPILib.h>
 #include <rev/CANSparkMax.h>
 
 class DriveManager {
     private:
-    rev::CANSparkMax *driveMotorLeft;
+    rev::CANSparkMax *driveMotorLeft; 
     rev::CANSparkMax *driveMotorRight;
 
     rev::CANSparkMax *slaveMotorLeft1;

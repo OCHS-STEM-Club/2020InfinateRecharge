@@ -84,11 +84,16 @@ void VisionManager::distance() {
 
 }
 
-double clamp(double in,double minval,double maxval)
-{
-  if (in > maxval) return maxval;
-  if (in < minval) return minval;
-  return in;
+double clamp(double in,double minval,double maxval) {
+  if (in > maxval) {
+    return maxval;
+  }
+  else if (in < minval) {
+    return minval;
+  }
+  else {
+    return in;
+  }
 }
 
 void VisionManager::trackTurn() {
@@ -103,5 +108,8 @@ void VisionManager::trackTurn() {
     turnOutput = targetOffsetAngle_Horizontal * STEER_K; //or divid by max value (27 degrees)
     turnOutput = clamp(turnOutput,-MAX_STEER,MAX_STEER);
     driveManager->subclassTurn(turnOutput);
+  }
+  else {
+    driveManager->subclassTurn(0);
   }
 }

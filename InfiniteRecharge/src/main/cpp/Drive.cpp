@@ -14,6 +14,13 @@ DriveManager::DriveManager () {
     slaveMotorRight1->Follow(*driveMotorRight, false);
     slaveMotorRight2->Follow(*driveMotorRight, false);
 
+    /*driveMotorLeft->SetSmartCurrentLimit(60);
+    driveMotorRight->SetSmartCurrentLimit(60);
+    slaveMotorLeft1->SetSmartCurrentLimit(60);
+    slaveMotorLeft2->SetSmartCurrentLimit(60);
+    slaveMotorRight1->SetSmartCurrentLimit(60);
+    slaveMotorRight2->SetSmartCurrentLimit(60); */
+
     leftDriveEnc = new rev::CANEncoder(*driveMotorLeft);
     rightDriveEnc = new rev::CANEncoder(*driveMotorRight);
     leftDriveEnc->SetPosition(0);
@@ -23,7 +30,7 @@ DriveManager::DriveManager () {
     stick = new frc::Joystick{0};
 }
 
-double absDouble (double x) {
+double absDouble (double x) { 
   if (x < 0) {
     return -x;
   }
