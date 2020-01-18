@@ -1,11 +1,11 @@
 #pragma once //runs only once
 
-#include <frc/WPILib.h>
+#include <frc/WPILib.h> 
 #include <rev/CANSparkMax.h>
 
-class DriveManager {
+class DriveManager { 
     private:
-    rev::CANSparkMax *driveMotorLeft; 
+    rev::CANSparkMax *driveMotorLeft; // declares motor controllers
     rev::CANSparkMax *driveMotorRight;
 
     rev::CANSparkMax *slaveMotorLeft1;
@@ -19,7 +19,7 @@ class DriveManager {
     frc::DifferentialDrive *robotDrive;
     frc::Joystick *stick;
 
-    double xStickValue;
+    double xStickValue; //creates stick varibles
     double yStickValue;
     public:
     DriveManager();

@@ -1,6 +1,6 @@
 #include <vision.hpp>
 
-VisionManager::VisionManager () {
+VisionManager::VisionManager () { //Finish initionalizing
 stick = new frc::Joystick{0};
 
 driveManager = new DriveManager();

@@ -1,36 +1,36 @@
 #include <Drive.hpp>
 
 DriveManager::DriveManager () {
-    driveMotorLeft = new rev::CANSparkMax(3, rev::CANSparkMax::MotorType::kBrushless);
-    driveMotorRight = new rev::CANSparkMax(4, rev::CANSparkMax::MotorType::kBrushless);
+    driveMotorLeft = new rev::CANSparkMax(2, rev::CANSparkMax::MotorType::kBrushless);
+    driveMotorRight = new rev::CANSparkMax(3, rev::CANSparkMax::MotorType::kBrushless);
 
-    slaveMotorLeft1 = new rev::CANSparkMax(5, rev::CANSparkMax::MotorType::kBrushless);
-    slaveMotorLeft2 = new rev::CANSparkMax(6, rev::CANSparkMax::MotorType::kBrushless);
-    slaveMotorRight1 = new rev::CANSparkMax(7, rev::CANSparkMax::MotorType::kBrushless);
-    slaveMotorRight2 = new rev::CANSparkMax(8, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorLeft1 = new rev::CANSparkMax(4, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorLeft2 = new rev::CANSparkMax(5, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorRight1 = new rev::CANSparkMax(6, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorRight2 = new rev::CANSparkMax(7, rev::CANSparkMax::MotorType::kBrushless);
 
-    slaveMotorLeft1->Follow(*driveMotorLeft, false);
+    slaveMotorLeft1->Follow(*driveMotorLeft, false); //follows drive motor left
     slaveMotorLeft2->Follow(*driveMotorLeft, false);
     slaveMotorRight1->Follow(*driveMotorRight, false);
     slaveMotorRight2->Follow(*driveMotorRight, false);
 
-    /*driveMotorLeft->SetSmartCurrentLimit(60);
-    driveMotorRight->SetSmartCurrentLimit(60);
-    slaveMotorLeft1->SetSmartCurrentLimit(60);
-    slaveMotorLeft2->SetSmartCurrentLimit(60);
-    slaveMotorRight1->SetSmartCurrentLimit(60);
-    slaveMotorRight2->SetSmartCurrentLimit(60); */
+    /*driveMotorLeft->SetSmartCurrentLimit(40); //sets max current limit
+    driveMotorRight->SetSmartCurrentLimit(40);
+    slaveMotorLeft1->SetSmartCurrentLimit(40);
+    slaveMotorLeft2->SetSmartCurrentLimit(40);
+    slaveMotorRight1->SetSmartCurrentLimit(40);
+    slaveMotorRight2->SetSmartCurrentLimit(40); */
 
-    leftDriveEnc = new rev::CANEncoder(*driveMotorLeft);
+    leftDriveEnc = new rev::CANEncoder(*driveMotorLeft); //creates encoder object
     rightDriveEnc = new rev::CANEncoder(*driveMotorRight);
-    leftDriveEnc->SetPosition(0);
+    leftDriveEnc->SetPosition(0); //sets encoder object to 0
     rightDriveEnc->SetPosition(0);
 
-    robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight);
+    robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight); //object holds motor cont info and does alc for that
     stick = new frc::Joystick{0};
 }
 
-double absDouble (double x) { 
+double absDouble (double x) { //method that takes a varible and gets the absolute value of it
   if (x < 0) {
     return -x;
   }
@@ -39,7 +39,7 @@ double absDouble (double x) {
   }
 }
 
-int Sign(double input) {
+int Sign(double input) { //method that returns numbers for its relation to 0
     if (input > 0) {
         return 1;
     }
@@ -51,7 +51,7 @@ int Sign(double input) {
     }
 }
 
-double deadband(double joystickValue, double deadbandValue) {
+double deadband(double joystickValue, double deadbandValue) { //colins special proportioanl deadband thingy just copy
     if(absDouble(joystickValue) < 0.2){
         return 0;
     }
@@ -61,15 +61,15 @@ double deadband(double joystickValue, double deadbandValue) {
 }
 
 void DriveManager::drive() {
-    xStickValue = stick->GetRawAxis(1);
+    xStickValue = stick->GetRawAxis(1); //getting raw axis values
     yStickValue = stick->GetRawAxis(2);
 
     robotDrive->ArcadeDrive(xStickValue, yStickValue);
 
-    frc::SmartDashboard::PutNumber("left encoder", leftDriveEnc->GetPosition());
+    frc::SmartDashboard::PutNumber("left encoder", leftDriveEnc->GetPosition()); //getting motor controller data and putting it on smart dashboard
     frc::SmartDashboard::PutNumber("right encoder", rightDriveEnc->GetPosition());
 }
 
-void DriveManager::subclassTurn(double turnValue) {
+void DriveManager::subclassTurn(double turnValue) { //allows different subclass to access drive system to turn robot (Ex vision tracking turns robot)
     robotDrive->ArcadeDrive(0, turnValue);
 }

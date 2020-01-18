@@ -24,7 +24,7 @@ void Robot::RobotInit() {
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
-  stick = new frc::Joystick{0};
+  stick = new frc::Joystick{0}; //Assigning the joystick to USB port 0 on the driver station
 
 
 }
@@ -71,7 +71,7 @@ void Robot::AutonomousPeriodic() {
   }
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {} //Initalize Teleop
 
 void Robot::TeleopPeriodic() {
   
@@ -89,8 +89,8 @@ void Robot::TeleopPeriodic() {
     colorManager->manualSpin();
   }*/
 
-  visionManager->display();
-  visionManager->distance();
+  visionManager->display(); //runs vision manager once teleop starts
+  visionManager->distance(); //runs vision manager once teleop starts
   
 }
 

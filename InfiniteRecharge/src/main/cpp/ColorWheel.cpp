@@ -7,7 +7,7 @@ ColorManager::ColorManager () {
   m_colorMatcher.AddColorMatch(kYellowTarget);
 
     stick = new frc::Joystick{0};
-    spinMotor = new WPI_TalonSRX(1);
+    spinMotor = new WPI_TalonSRX(8);
     spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
     currentColor = " ";
     colorCount = 0;
