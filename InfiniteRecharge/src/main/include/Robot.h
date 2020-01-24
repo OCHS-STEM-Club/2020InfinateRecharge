@@ -2,7 +2,7 @@
 /* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
-/* the project.                      BOOL                                     */
+/* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
 #pragma once
@@ -16,9 +16,9 @@
 
 #include "frc/smartdashboard/Smartdashboard.h" //Includes the smartdashboard
 
-//#include <ColorWheel.hpp> //Includes the ColorWheel.hpp code
+#include <ColorWheel.hpp> //Includes the ColorWheel.hpp code
 //#include <Drive.hpp>
-#include <vision.hpp>
+//#include <vision.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -37,7 +37,7 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  //ColorManager *colorManager;
+  ColorManager *colorManager;
   //DriveManager *driveManager;
-  VisionManager *visionManager;
+  //VisionManager *visionManager;
 };

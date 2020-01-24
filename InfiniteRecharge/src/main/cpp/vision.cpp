@@ -3,8 +3,6 @@
 VisionManager::VisionManager () { //Finish initionalizing
 stick = new frc::Joystick{0};
 
-driveManager = new DriveManager();
-
 }
 
 void VisionManager::display() {
@@ -96,20 +94,33 @@ double clamp(double in,double minval,double maxval) {
   }
 }
 
-void VisionManager::trackTurn() {
+double VisionManager::trackTurn() {
   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
   double targetOffsetAngle_Horizontal = table->GetNumber("tx",0.0);
-  double targetOffsetAngle_Vertical = table->GetNumber("ty",0.0);
-  double targetArea = table->GetNumber("ta",0.0);
-  double targetSkew = table->GetNumber("ts",0.0);
   double tv = table->GetNumber("tv",0.0);
 
   if (tv == 1) {
     turnOutput = targetOffsetAngle_Horizontal * STEER_K; //or divid by max value (27 degrees)
     turnOutput = clamp(turnOutput,-MAX_STEER,MAX_STEER);
-    driveManager->subclassTurn(turnOutput);
+    return turnOutput;
   }
   else {
-    driveManager->subclassTurn(0);
+    return 0;
+  }
+}
+
+double VisionManager::trackMove() {
+  std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
+  double targetArea = table->GetNumber("ta",0.0);
+  double tv = table->GetNumber("tv",0.0);
+
+  if (tv == 1) {
+    moveOutput = (targetArea - moveWant) * DRIVE_K;
+    moveOutput = clamp(moveOutput, -MAX_DRIVE,MAX_DRIVE);
+    
+    return moveOutput;
+  }
+  else {
+    return 0;
   }
 }

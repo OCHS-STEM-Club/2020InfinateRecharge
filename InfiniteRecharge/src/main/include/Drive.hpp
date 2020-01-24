@@ -24,5 +24,46 @@ class DriveManager {
     public:
     DriveManager();
     void drive();
-    void subclassTurn(double turnValue);
+    void subclassTurn(double turnValue, double moveValue);
 }; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//BOOL

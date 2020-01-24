@@ -61,15 +61,20 @@ double deadband(double joystickValue, double deadbandValue) { //colins special p
 }
 
 void DriveManager::drive() {
-    xStickValue = stick->GetRawAxis(1); //getting raw axis values
-    yStickValue = stick->GetRawAxis(2);
+    xStickValue = -deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
+    yStickValue = deadband(stick->GetRawAxis(2), 0.2);
 
     robotDrive->ArcadeDrive(xStickValue, yStickValue);
 
     frc::SmartDashboard::PutNumber("left encoder", leftDriveEnc->GetPosition()); //getting motor controller data and putting it on smart dashboard
     frc::SmartDashboard::PutNumber("right encoder", rightDriveEnc->GetPosition());
+    frc::SmartDashboard::PutNumber("left velocity", leftDriveEnc->GetVelocity());
+    frc::SmartDashboard::PutNumber("right velocity", rightDriveEnc->GetVelocity());
+
+    frc::SmartDashboard::PutNumber("left current", driveMotorLeft->GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("right current", driveMotorRight->GetOutputCurrent());
 }
 
-void DriveManager::subclassTurn(double turnValue) { //allows different subclass to access drive system to turn robot (Ex vision tracking turns robot)
-    robotDrive->ArcadeDrive(0, turnValue);
+void DriveManager::subclassTurn(double turnValue, double moveValue) { //allows different subclass to access drive system to turn robot (Ex vision tracking turns robot)
+    robotDrive->ArcadeDrive(moveValue, turnValue);
 }

@@ -13,12 +13,13 @@
 
 
 Robot::Robot() {
-  //colorManager = new ColorManager();
+  colorManager = new ColorManager();
   //driveManager = new DriveManager();
-  visionManager = new VisionManager();
+  //visionManager = new VisionManager();
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
+frc::Servo *linActuator;
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -26,7 +27,8 @@ void Robot::RobotInit() {
 
   stick = new frc::Joystick{0}; //Assigning the joystick to USB port 0 on the driver station
 
-
+  linActuator = new frc::Servo(9);
+  linActuator->SetBounds(2.0, 1.8, 1, 1.2, 1.0);
 }
 
 /**
@@ -86,12 +88,33 @@ void Robot::TeleopPeriodic() {
     colorManager->countSpinsEnc();
   }
   else {
-    colorManager->manualSpin();
+    */colorManager->manualSpin();/*
   }*/
 
-  visionManager->display(); //runs vision manager once teleop starts
-  visionManager->distance(); //runs vision manager once teleop starts
+  //visionManager->display(); //runs vision manager once teleop starts
+  //visionManager->distance(); //runs vision manager once teleop starts
   
+ /* if (!stick->GetRawButton(12)) {
+		driveManager->driveTrain();//0, 0, false);
+	}
+	else {
+		visionTurn = visionManager->trackTurn();
+    visionMove = visionManager->trackMove();
+
+    //driveManager->driveTrain(visionMove, visionTurn, true);
+    driveManager->subclassTurn(visionTurn, visionMove);
+	}*/
+  
+  if (stick->GetRawButton(9)) {
+    linActuator->SetSpeed(1);
+  }
+  else if (stick->GetRawButton(10)) {
+    linActuator->SetSpeed(-1);
+  }
+  else {
+    linActuator->SetSpeed(0);
+    //linActuator->SetDisabled();
+  }
 }
 
 void Robot::TestPeriodic() {}
