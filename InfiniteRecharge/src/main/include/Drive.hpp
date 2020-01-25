@@ -21,6 +21,8 @@ class DriveManager {
 
     double xStickValue; //creates stick varibles
     double yStickValue;
+
+    double currentAngle;
     public:
     DriveManager();
     void drive();

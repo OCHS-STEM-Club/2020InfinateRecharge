@@ -7,11 +7,19 @@ ManipulatorManager::ManipulatorManager () {
   m_colorMatcher.AddColorMatch(kYellowTarget);
 
     stick = new frc::Joystick{0};
+    xbox = new frc::XboxController{1};
+
     spinMotor = new WPI_TalonSRX(8);
     spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
+
+    intakeRotateMotor = new rev::CANSparkMax(10, rev::CANSparkMax::MotorType::kBrushless);
+    intakeSpinMotor = new WPI_TalonSRX(11);
+
     currentColor = " ";
     colorCount = 0;
     encStartRot = 0;
+
+    
 }
 
 /*int Sign(double input) {
@@ -157,7 +165,8 @@ void ManipulatorManager::countSpins() {
 void ManipulatorManager::countSpinsEnc(){
   currentEncRot = spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0;
   frc::SmartDashboard::PutNumber("spin motor roations", currentEncRot);
-  if (stick->GetRawButton(9)){
+
+  if (stick->GetRawButton(9)){ //sets start and end values
     encStartRot = currentEncRot;
     encEndRot = encStartRot + (3.5 * (1/COLORWHEELRATIO));
   }
@@ -168,4 +177,9 @@ void ManipulatorManager::countSpinsEnc(){
   else {
     spinMotor->Set(0);
   }
+}
+
+void ManipulatorManager::intake() {
+  intakeRotateMotor->Set(xbox->GetRawAxis(5));
+  intakeSpinMotor->Set(xbox->GetRawAxis(1));
 }

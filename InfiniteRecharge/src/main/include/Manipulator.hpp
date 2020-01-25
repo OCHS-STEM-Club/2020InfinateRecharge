@@ -2,10 +2,11 @@
 
 #include <frc/WPILib.h>
 #include <ctre/Phoenix.h> 
+#include <rev/CANSparkMax.h>
 #include "rev/ColorSensorV3.h"
 #include "rev/ColorMatch.h"
 
-#define COLORWHEELRATIO 0.25 ///4/16
+#define COLORWHEELRATIO 0.25 //4/16
 
 class ManipulatorManager {
  private:
@@ -21,17 +22,22 @@ class ManipulatorManager {
   static constexpr frc::Color kRedTarget = frc::Color(0.616, 0.318, 0.067);
   static constexpr frc::Color kYellowTarget = frc::Color(0.446, 0.480, 0.074);
 
-    frc::Joystick *stick;
-    WPI_TalonSRX *spinMotor;
+  frc::Joystick *stick;
+  frc::XboxController *xbox;
 
-    double xStickValue;
-    std::string gameData;
-    std::string currentColor;
-    int colorCount;
+  WPI_TalonSRX *spinMotor;
+  
+  rev::CANSparkMax *intakeRotateMotor;
+  WPI_TalonSRX *intakeSpinMotor;
 
-    double encStartRot;
-    double encEndRot;
-    double currentEncRot;
+  double xStickValue;
+  std::string gameData;
+  std::string currentColor;
+  int colorCount;
+
+  double encStartRot;
+  double encEndRot;
+  double currentEncRot;
     
 
  public:
@@ -40,4 +46,5 @@ class ManipulatorManager {
     void colorFinder();
     void countSpins();
     void countSpinsEnc();
+    void intake();
 };
