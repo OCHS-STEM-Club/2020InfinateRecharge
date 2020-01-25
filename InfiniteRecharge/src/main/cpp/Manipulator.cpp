@@ -1,20 +1,20 @@
-#include <ColorWheel.hpp>
+#include <Manipulator.hpp>
 
-ColorManager::ColorManager () {
+ManipulatorManager::ManipulatorManager () {
   m_colorMatcher.AddColorMatch(kBlueTarget);
   m_colorMatcher.AddColorMatch(kGreenTarget);
   m_colorMatcher.AddColorMatch(kRedTarget);
   m_colorMatcher.AddColorMatch(kYellowTarget);
 
     stick = new frc::Joystick{0};
-    spinMotor = new WPI_TalonSRX(1);
+    spinMotor = new WPI_TalonSRX(8);
     spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
     currentColor = " ";
     colorCount = 0;
     encStartRot = 0;
 }
 
-int Sign(double input) {
+/*int Sign(double input) {
     if (input > 0) {
         return 1;
     }
@@ -33,9 +33,9 @@ double deadband(double joystickValue, double deadbandValue) {
     else{
         return (1 / (1 - deadbandValue)) * (joystickValue + (-Sign(joystickValue) * deadbandValue));
     } 
-}
+}*/
 
-void ColorManager::manualSpin() {
+void ManipulatorManager::manualColorSpin() {
     xStickValue = stick->GetRawAxis(1);
     //xStickValue = deadband(xStickValue,0.5);
 
@@ -75,7 +75,7 @@ void ColorManager::manualSpin() {
   frc::SmartDashboard::PutString("Detected Color", colorString);
 }
 
-void ColorManager::colorFinder() {
+void ManipulatorManager::colorFinder() {
   gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
 
   frc::Color detectedColor = m_colorSensor.GetColor();
@@ -110,7 +110,7 @@ void ColorManager::colorFinder() {
   
 }
 
-void ColorManager::countSpins() {
+void ManipulatorManager::countSpins() {
 
   frc::Color detectedColor = m_colorSensor.GetColor();
 
@@ -154,7 +154,7 @@ void ColorManager::countSpins() {
   frc::SmartDashboard::PutString("Detected Color", colorString);
 }
 
-void ColorManager::countSpinsEnc(){
+void ManipulatorManager::countSpinsEnc(){
   currentEncRot = spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0;
   frc::SmartDashboard::PutNumber("spin motor roations", currentEncRot);
   if (stick->GetRawButton(9)){

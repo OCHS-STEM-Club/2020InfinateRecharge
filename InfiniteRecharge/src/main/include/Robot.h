@@ -7,18 +7,19 @@
 
 #pragma once
 
-#include <string>
+#include <string> //Includes a prepopulated include (DO NOT DELETE)
 
-#include <frc/TimedRobot.h>
-#include <frc/smartdashboard/SendableChooser.h>
+#include <frc/TimedRobot.h> //Includes a prepopulated include that runs the code (DO NOT DELETE)
+#include <frc/smartdashboard/SendableChooser.h> //Includes the sendable chooser include
 
-#include <frc/WPILib.h>
+#include <frc/WPILib.h> //Includes the WPI library for FRC
 
-#include "frc/smartdashboard/Smartdashboard.h"
+#include "frc/smartdashboard/Smartdashboard.h" //Includes the smartdashboard
 
-//#include <ColorWheel.hpp>
+#include <Manipulator.hpp> //Includes the ColorWheel.hpp code
 //#include <Drive.hpp>
-#include <vision.hpp>
+//#include <vision.hpp>
+#include <Shooter.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -37,7 +38,8 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  //ColorManager *colorManager;
+  ManipulatorManager *manipulatorManager;
   //DriveManager *driveManager;
-  VisionManager *visionManager;
+  //VisionManager *visionManager;
+  ShooterManager *shooterManager;
 };
