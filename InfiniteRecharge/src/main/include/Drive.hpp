@@ -3,6 +3,7 @@
 #include <frc/WPILib.h> 
 #include <rev/CANSparkMax.h>
 
+
 class DriveManager { 
     private:
     rev::CANSparkMax *driveMotorLeft; // declares motor controllers
@@ -22,9 +23,22 @@ class DriveManager {
     double xStickValue; //creates stick varibles
     double yStickValue;
 
-    double currentAngle;
+    double revNeed;
+    double leftRevWant;
+    double rightRevWant;
+    double leftOffset;
+    double rightOffset;
+    double avgOffset;
+    double leftCurrentPos;
+    double rightCurrentPos;
+    double power;
+    bool toggle = true;
+    
+
     public:
     DriveManager();
     void drive();
     void subclassTurn(double turnValue, double moveValue);
+    bool autoDrive(double distance);
+
 }; 

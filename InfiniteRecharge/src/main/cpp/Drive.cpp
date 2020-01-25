@@ -81,3 +81,49 @@ void DriveManager::subclassTurn(double turnValue, double moveValue) { //allows d
     robotDrive->ArcadeDrive(moveValue, turnValue);
 }
 
+double distanceToRev(double in){
+    in *= 12;
+    in /= 18.84;
+    in *= 7.18;
+    return in;
+}
+
+double clampDrive(double in,double minval,double maxval) {
+  if (in > maxval) {
+    return maxval;
+  }
+  else if (in < minval) {
+    return minval;
+  }
+  else {
+    return in;
+  }
+}
+
+bool DriveManager::autoDrive(double distance){
+  leftCurrentPos = driveMotorLeft->GetEncoder().GetPosition();
+  rightCurrentPos = driveMotorRight->GetEncoder().GetPosition();
+  revNeed = distanceToRev(distance);
+
+  if (toggle){
+  leftRevWant = leftCurrentPos + revNeed;
+  rightRevWant = rightCurrentPos + revNeed;
+  toggle = !toggle;
+  }
+
+  leftOffset = leftCurrentPos - leftRevWant;
+  rightOffset = rightCurrentPos - rightRevWant;
+  avgOffset = (rightOffset + leftOffset)/2.0;
+
+  power = avgOffset / (revNeed / 2);
+  power = clampDrive(power,-0.5,0.5);
+  robotDrive->ArcadeDrive(power, 0);
+
+  if (avgOffset < 2){
+      toggle = !toggle;
+      return true;    
+  }
+  else {
+      return false;
+  }
+}

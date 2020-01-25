@@ -64,22 +64,13 @@ void VisionManager::display() {
 
 void VisionManager::distance() {
   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
-  double targetOffsetAngle_Horizontal = table->GetNumber("tx",0.0);
-  double targetOffsetAngle_Vertical = table->GetNumber("ty",0.0);
   double targetArea = table->GetNumber("ta",0.0);
-  double targetSkew = table->GetNumber("ts",0.0);
-
-  /*frc::SmartDashboard::PutNumber("tx", targetOffsetAngle_Horizontal);
-  frc::SmartDashboard::PutNumber("ty", targetOffsetAngle_Vertical);
-  frc::SmartDashboard::PutNumber("ta", targetArea);
-  frc::SmartDashboard::PutNumber("ts", targetSkew);*/
 
   //rawDistance = targetArea * AREADISTANCERATIO;
   rawDistance = (targetArea * -1.31) +12.8;
   frc::SmartDashboard::PutNumber("raw distance", rawDistance);
   //distanceFlat = sqrt(pow(rawDistance, 2) - pow(8.1875,2));
   //frc::SmartDashboard::PutNumber("target distance", distanceFlat);
-
 }
 
 double clamp(double in,double minval,double maxval) {
@@ -117,7 +108,6 @@ double VisionManager::trackMove() {
   if (tv == 1) {
     moveOutput = (targetArea - moveWant) * DRIVE_K;
     moveOutput = clamp(moveOutput, -MAX_DRIVE,MAX_DRIVE);
-    
     return moveOutput;
   }
   else {
