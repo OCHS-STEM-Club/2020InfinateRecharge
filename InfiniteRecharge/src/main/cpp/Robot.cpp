@@ -13,13 +13,19 @@
 
 
 Robot::Robot() {
-  colorManager = new ColorManager();
+  manipulatorManager = new ManipulatorManager();
   //driveManager = new DriveManager();
   //visionManager = new VisionManager();
+  shooterManager = new ShooterManager();
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
 frc::Servo *linActuator;
+
+double visionMove;
+double visionTurn;
+double visionRPM;
+
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -88,7 +94,7 @@ void Robot::TeleopPeriodic() {
     colorManager->countSpinsEnc();
   }
   else {
-    */colorManager->manualSpin();/*
+    */manipulatorManager->manualColorSpin();/*
   }*/
 
   //visionManager->display(); //runs vision manager once teleop starts
@@ -96,13 +102,16 @@ void Robot::TeleopPeriodic() {
   
  /* if (!stick->GetRawButton(12)) {
 		driveManager->driveTrain();//0, 0, false);
+    shooterManager->shoot(0, false);
 	}
 	else {
 		visionTurn = visionManager->trackTurn();
     visionMove = visionManager->trackMove();
+    //visionRPM = ?;
 
     //driveManager->driveTrain(visionMove, visionTurn, true);
     driveManager->subclassTurn(visionTurn, visionMove);
+    //shooterManager->shoot(visionRPM, true);
 	}*/
   
   if (stick->GetRawButton(9)) {

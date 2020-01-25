@@ -14,17 +14,19 @@ DriveManager::DriveManager () {
     slaveMotorRight1->Follow(*driveMotorRight, false);
     slaveMotorRight2->Follow(*driveMotorRight, false);
 
-    /*driveMotorLeft->SetSmartCurrentLimit(40); //sets max current limit
-    driveMotorRight->SetSmartCurrentLimit(40);
-    slaveMotorLeft1->SetSmartCurrentLimit(40);
-    slaveMotorLeft2->SetSmartCurrentLimit(40);
-    slaveMotorRight1->SetSmartCurrentLimit(40);
-    slaveMotorRight2->SetSmartCurrentLimit(40); */
+    driveMotorLeft->SetSmartCurrentLimit(60); //sets max current limit
+    driveMotorRight->SetSmartCurrentLimit(60); //defalt is 80
+    slaveMotorLeft1->SetSmartCurrentLimit(60);
+    slaveMotorLeft2->SetSmartCurrentLimit(60);
+    slaveMotorRight1->SetSmartCurrentLimit(60);
+    slaveMotorRight2->SetSmartCurrentLimit(60); 
 
-    leftDriveEnc = new rev::CANEncoder(*driveMotorLeft); //creates encoder object
+    /*leftDriveEnc = new rev::CANEncoder(*driveMotorLeft); //creates encoder object
     rightDriveEnc = new rev::CANEncoder(*driveMotorRight);
     leftDriveEnc->SetPosition(0); //sets encoder object to 0
-    rightDriveEnc->SetPosition(0);
+    rightDriveEnc->SetPosition(0);*/
+    driveMotorLeft->GetEncoder().SetPosition(0);
+    driveMotorRight->GetEncoder().SetPosition(0);
 
     robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight); //object holds motor cont info and does alc for that
     stick = new frc::Joystick{0};
@@ -66,10 +68,10 @@ void DriveManager::drive() {
 
     robotDrive->ArcadeDrive(xStickValue, yStickValue);
 
-    frc::SmartDashboard::PutNumber("left encoder", leftDriveEnc->GetPosition()); //getting motor controller data and putting it on smart dashboard
-    frc::SmartDashboard::PutNumber("right encoder", rightDriveEnc->GetPosition());
-    frc::SmartDashboard::PutNumber("left velocity", leftDriveEnc->GetVelocity());
-    frc::SmartDashboard::PutNumber("right velocity", rightDriveEnc->GetVelocity());
+    frc::SmartDashboard::PutNumber("left encoder", driveMotorLeft->GetEncoder().GetPosition()); //getting motor controller data and putting it on smart dashboard
+    frc::SmartDashboard::PutNumber("right encoder", driveMotorLeft->GetEncoder().GetPosition());
+    frc::SmartDashboard::PutNumber("left velocity", driveMotorLeft->GetEncoder().GetVelocity());
+    frc::SmartDashboard::PutNumber("right velocity", driveMotorLeft->GetEncoder().GetVelocity());
 
     frc::SmartDashboard::PutNumber("left current", driveMotorLeft->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("right current", driveMotorRight->GetOutputCurrent());

@@ -7,7 +7,7 @@
 
 #define COLORWHEELRATIO 0.25 ///4/16
 
-class ColorManager {
+class ManipulatorManager {
  private:
   rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
   rev::ColorMatch m_colorMatcher;
@@ -35,8 +35,8 @@ class ColorManager {
     
 
  public:
-    ColorManager();
-    void manualSpin();
+    ManipulatorManager();
+    void manualColorSpin();
     void colorFinder();
     void countSpins();
     void countSpinsEnc();
