@@ -121,8 +121,8 @@ bool DriveManager::autoDrive(double distance){
   rightCurrentPos = driveMotorRight->GetEncoder().GetPosition() - rightEncLast;
   revNeed = distanceToRev(distance);
 
-  leftOffset = leftCurrentPos - distance;
-  rightOffset = rightCurrentPos - distance;
+  leftOffset = revNeed - leftCurrentPos;
+  rightOffset = revNeed - rightCurrentPos;
   avgOffset = (rightOffset + leftOffset)/2.0;
 
   power = avgOffset / (revNeed / 2);
