@@ -30,6 +30,8 @@ class ManipulatorManager {
   rev::CANSparkMax *intakeRotateMotor;
   WPI_TalonSRX *intakeSpinMotor;
 
+  frc::Servo *linActuator;
+
   double xStickValue;
   std::string gameData;
   std::string currentColor;
@@ -47,4 +49,5 @@ class ManipulatorManager {
     void countSpins();
     void countSpinsEnc();
     void intake();
+    void linearActuator();
 };

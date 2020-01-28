@@ -19,7 +19,8 @@ ManipulatorManager::ManipulatorManager () {
     colorCount = 0;
     encStartRot = 0;
 
-    
+      linActuator = new frc::Servo(9);
+  linActuator->SetBounds(2.0, 1.8, 1, 1.2, 1.0);
 }
 
 /*int Sign(double input) {
@@ -182,4 +183,17 @@ void ManipulatorManager::countSpinsEnc(){
 void ManipulatorManager::intake() {
   intakeRotateMotor->Set(xbox->GetRawAxis(5));
   intakeSpinMotor->Set(xbox->GetRawAxis(1));
+}
+
+void ManipulatorManager::linearActuator() {
+    if (stick->GetRawButton(9)) {
+    linActuator->SetSpeed(1);
+  }
+  else if (stick->GetRawButton(10)) {
+    linActuator->SetSpeed(-1);
+  }
+  else {
+    linActuator->SetSpeed(0);
+    //linActuator->SetDisabled();
+  }
 }
