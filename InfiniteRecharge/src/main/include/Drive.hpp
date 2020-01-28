@@ -2,7 +2,9 @@
 
 #include <frc/WPILib.h> 
 #include <rev/CANSparkMax.h>
+#include <AHRS.h>
 
+#define TURN_K -0.3
 
 class DriveManager { 
     private:
@@ -20,25 +22,28 @@ class DriveManager {
     frc::DifferentialDrive *robotDrive;
     frc::Joystick *stick;
 
+    AHRS *gyro;
+
     double xStickValue; //creates stick varibles
     double yStickValue;
 
     double revNeed;
-    double leftRevWant;
-    double rightRevWant;
     double leftOffset;
     double rightOffset;
     double avgOffset;
     double leftCurrentPos;
     double rightCurrentPos;
     double power;
-    bool toggle = true;
-    
+    double leftEncLast;
+    double rightEncLast;
+    double gyroLast;
+    double turnCorrection;
 
     public:
     DriveManager();
     void drive();
     void subclassTurn(double turnValue, double moveValue);
     bool autoDrive(double distance);
+    void autoDrivePrep();
 
 }; 
