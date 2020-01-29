@@ -26,11 +26,14 @@ class ManipulatorManager {
   frc::XboxController *xbox;
 
   WPI_TalonSRX *spinMotor;
+  WPI_TalonSRX *trapDoorMotor;
   
   rev::CANSparkMax *intakeRotateMotor;
   WPI_TalonSRX *intakeSpinMotor;
 
   frc::Servo *linActuator;
+
+  rev::CANPIDController *intakePidController;
 
   double xStickValue;
   std::string gameData;
@@ -40,6 +43,9 @@ class ManipulatorManager {
   double encStartRot;
   double encEndRot;
   double currentEncRot;
+  
+  bool intakeButtonToggle = true;
+  int rotateControlMode = 0;
     
 
  public:
@@ -50,4 +56,5 @@ class ManipulatorManager {
     void countSpinsEnc();
     void intake();
     void linearActuator();
+    void intakeTest();
 };
