@@ -44,7 +44,7 @@ void VisionManager::display() {
   else {
     frc::SmartDashboard::PutBoolean("is alligned", false);
 
-    if (targetOffsetAngle_Vertical > 0) {
+    /*if (targetOffsetAngle_Vertical > 0) {
         frc::SmartDashboard::PutString("vert correction", "up");
     }
     else {
@@ -56,7 +56,7 @@ void VisionManager::display() {
     }
     else {
         frc::SmartDashboard::PutString("horizontal correction", "left");
-    }
+    }*/
   }
 
 }
@@ -64,10 +64,10 @@ void VisionManager::display() {
 
 void VisionManager::distance() {
   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
-  double targetOffsetAngle_Horizontal = table->GetNumber("tx",0.0);
-  double targetOffsetAngle_Vertical = table->GetNumber("ty",0.0);
+  //double targetOffsetAngle_Horizontal = table->GetNumber("tx",0.0);
+  //double targetOffsetAngle_Vertical = table->GetNumber("ty",0.0);
   double targetArea = table->GetNumber("ta",0.0);
-  double targetSkew = table->GetNumber("ts",0.0);
+  //double targetSkew = table->GetNumber("ts",0.0);
 
   /*frc::SmartDashboard::PutNumber("tx", targetOffsetAngle_Horizontal);
   frc::SmartDashboard::PutNumber("ty", targetOffsetAngle_Vertical);
