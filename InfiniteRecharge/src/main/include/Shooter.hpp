@@ -6,8 +6,7 @@
 
 class ShooterManager { 
     private:
-    rev::CANSparkMax *shootMotor;
-    rev::CANPIDController *pidController;
+    WPI_TalonFX *shootMotor;
 
     WPI_TalonSRX *feederMotor;
 

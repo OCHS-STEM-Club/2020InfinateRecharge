@@ -1,8 +1,52 @@
 #include <vision.hpp>
 
 VisionManager::VisionManager () { //Finish initionalizing
-stick = new frc::Joystick{0};
+  stick = new frc::Joystick{0};
+  led = new frc::AddressableLED{8};
+  led->SetLength(LED_LENGTH);
+  led->Start();
 
+}
+
+int r;
+int g;
+int b;
+std::array<frc::AddressableLED::LEDData, LED_LENGTH> ledBuffer;
+void setLED(std::string color) {
+  if (color == "r") {
+    r = 255;
+    g = 0;
+    b = 0;
+  }
+  else if (color == "g") {
+    r = 0;
+    g = 255;
+    b = 0;
+  }
+  else if (color == "b") {
+    r = 0;
+    g = 0;
+    b = 255;
+  }
+  else if (color == "y") {
+    r = 255;
+    g = 255;
+    b = 0;
+  }
+  else if (color == "bl") {
+    r = 0;
+    g = 0;
+    b = 0;
+  }
+  else if (color == "w") {
+    r = 255;
+    g = 255;
+    b = 255;
+  }
+
+  for (int i = 0; i < LED_LENGTH; i++) {
+    ledBuffer[i].SetRGB(r,g,b);
+  }
 }
 
 void VisionManager::display() {
@@ -38,27 +82,20 @@ void VisionManager::display() {
     table->PutNumber("ledMode", 1);
   }
 
-  if (abs(targetOffsetAngle_Horizontal) < 1 && abs(targetOffsetAngle_Vertical) < 1) {
+  if (abs(targetOffsetAngle_Horizontal) < 5 && abs(targetOffsetAngle_Vertical) < 5 && table->GetNumber("tv", 0.0)) {
     frc::SmartDashboard::PutBoolean("is alligned", true);
+    setLED("g");
+  }
+  else if (table->GetNumber("tv", 0.0)) {
+    frc::SmartDashboard::PutBoolean("is alligned", false);
+    setLED("b");
   }
   else {
     frc::SmartDashboard::PutBoolean("is alligned", false);
-
-    /*if (targetOffsetAngle_Vertical > 0) {
-        frc::SmartDashboard::PutString("vert correction", "up");
-    }
-    else {
-        frc::SmartDashboard::PutString("vert correction", "down");
-    }
-
-    if (targetOffsetAngle_Horizontal > 0) {
-        frc::SmartDashboard::PutString("horizontal correction", "right");
-    }
-    else {
-        frc::SmartDashboard::PutString("horizontal correction", "left");
-    }*/
+    setLED("r");
   }
 
+  led->SetData(ledBuffer);
 }
 
 

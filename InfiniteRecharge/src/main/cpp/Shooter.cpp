@@ -1,27 +1,26 @@
 #include <Shooter.hpp>
 
 ShooterManager::ShooterManager () {
-    shootMotor = new rev::CANSparkMax(12, rev::CANSparkMax::MotorType::kBrushless);
-    shootMotor->GetEncoder().SetPosition(0);
-
-    pidController = new rev::CANPIDController(*shootMotor);
-    pidController->SetP(0);
-    pidController->SetI(0);
-    pidController->SetD(0);
-    //pidController->SetIZone(0);
-    //pidController->SetFF(0);
-    pidController->SetOutputRange(1,-1);
+    shootMotor = new WPI_TalonFX(12);
+    shootMotor->GetSensorCollection().SetIntegratedSensorPosition(0,10);
+    shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+    //shootMotor->SetSensorPhase(true);
+	//shootMotor->SetInverted(false);
+	shootMotor->ConfigAllowableClosedloopError(0, 0, 10);
+	shootMotor->Config_kP(0, 0, 10);
+	shootMotor->Config_kI(0, 0, 10);
+	shootMotor->Config_kD(0, 0, 10);
 
     feederMotor = new WPI_TalonSRX(13);
     xbox = new frc::XboxController{1};
 }
 
 void ShooterManager::shoot(double velocityWant, double enabled) {
-    velocityAct = shootMotor->GetEncoder().GetPosition();
+    velocityAct = shootMotor->GetSensorCollection().GetIntegratedSensorVelocity();
     frc::SmartDashboard::PutNumber("shooter rpm", velocityAct);
 
     if (enabled) {
-        pidController->SetReference(velocityWant, rev::ControlType::kVelocity);
+        shootMotor->Set(ControlMode::Velocity, velocityWant); //replace 0 with correct
     }
     else {
         shootMotor->Set(0);
