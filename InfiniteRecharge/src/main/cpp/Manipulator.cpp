@@ -23,7 +23,7 @@ ManipulatorManager::ManipulatorManager () {
   encStartRot = 0;
 
   linActuator = new frc::Servo(9);
-  linActuator->SetBounds(2.0, 1.8, 1, 1.2, 1.0);
+  linActuator->SetBounds(2.0, 1.8, 1.0, 1.2, 1.0);
 
   intakePidController = new rev::CANPIDController(*intakeRotateMotor);
   intakePidController->SetP(0);
@@ -234,6 +234,9 @@ void ManipulatorManager::intake() {
     if (intakeRotateMotor->GetEncoder().GetPosition() > 0) { //replace 0 with desired location
       intakeRotateMotor->Set(-0.2);
     }
+    else {
+      intakeRotateMotor->Set(0);
+    }
   }
   if (rotateControlMode == 3) {
     intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
@@ -249,15 +252,17 @@ void ManipulatorManager::intake() {
 
 void ManipulatorManager::linearActuator() {
     if (stick->GetRawButton(9)) {
-    linActuator->SetSpeed(1);
+    //linActuator->SetSpeed(1);
+    linActuator->SetPosition(1);
   }
   else if (stick->GetRawButton(10)) {
-    linActuator->SetSpeed(-1);
+    //linActuator->SetSpeed(-1);
+    linActuator->SetPosition(2);
   }
-  else {
-    linActuator->SetSpeed(0);
+  /*else {
+    //linActuator->SetSpeed(0);
     //linActuator->SetDisabled();
-  }
+  }*/
 }
 
 void ManipulatorManager::intakeTest() {
