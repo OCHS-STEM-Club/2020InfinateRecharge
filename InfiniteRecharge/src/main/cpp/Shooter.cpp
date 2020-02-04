@@ -11,8 +11,12 @@ ShooterManager::ShooterManager () {
 	shootMotor->Config_kI(0, 0, 10);
 	shootMotor->Config_kD(0, 0, 10);
 
+    hoodMotor = new WPI_TalonSRX(14);
+
     feederMotor = new WPI_TalonSRX(13);
     xbox = new frc::XboxController{1};
+    hoodEncoder = new frc::DigitalInput(1);
+    currentEncoderState = hoodEncoder->Get();
 }
 
 void ShooterManager::shoot(double velocityWant, double enabled) {
@@ -43,4 +47,17 @@ void ShooterManager::shootTest() { //warning use only by its self
     if (xbox->GetRawButton(12)) { //fix button later
         feederMotor->Set(0.2);
     }
+}
+
+void ShooterManager::hoodRotate(double hoodPosition){
+    if (currentEncoderState != hoodEncoder->Get()){
+        if (hoodMotor->Get() > 0){
+            hoodEncoderCount++;
+        }
+        else {
+            hoodEncoderCount--;
+        }
+        currentEncoderState = hoodEncoder->Get();
+    }
+    
 }
