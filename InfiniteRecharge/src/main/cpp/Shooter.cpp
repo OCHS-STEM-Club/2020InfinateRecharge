@@ -60,4 +60,5 @@ void ShooterManager::hoodRotate(double hoodPosition){
         currentEncoderState = hoodEncoder->Get();
     }
     
+    hoodMotor->Set((hoodPosition - hoodEncoderCount) * 0.05);
 }
