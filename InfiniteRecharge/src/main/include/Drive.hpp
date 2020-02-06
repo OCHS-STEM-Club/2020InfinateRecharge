@@ -44,6 +44,6 @@ class DriveManager {
     void drive();
     void subclassTurn(double turnValue, double moveValue);
     bool autoDrive(double distance);
-    void autoDrivePrep();
-
+    void autoPrep();
+    void autoTurn(double angle);
 }; 

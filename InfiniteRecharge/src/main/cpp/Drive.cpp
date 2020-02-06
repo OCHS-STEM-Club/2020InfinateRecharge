@@ -42,15 +42,6 @@ DriveManager::DriveManager () {
 	gyro->Reset();
 }
 
-double absDouble (double x) { //method that takes a varible and gets the absolute value of it
-  if (x < 0) {
-    return -x;
-  }
-  else {
-    return x;
-  }
-}
-
 int Sign(double input) { //method that returns numbers for its relation to 0
     if (input > 0) {
         return 1;
@@ -64,7 +55,7 @@ int Sign(double input) { //method that returns numbers for its relation to 0
 }
 
 double deadband(double joystickValue, double deadbandValue) { //colins special proportioanl deadband thingy just copy
-    if(absDouble(joystickValue) < 0.2){
+    if(fabs(joystickValue) < 0.2){
         return 0;
     }
     else{
@@ -110,7 +101,7 @@ double clampDrive(double in,double minval,double maxval) {
   }
 }
 
-void DriveManager::autoDrivePrep() {
+void DriveManager::autoPrep() {
   leftEncLast = driveMotorLeft->GetEncoder().GetPosition();
   rightEncLast = driveMotorRight->GetEncoder().GetPosition();
   gyroLast = gyro->GetAngle();
@@ -138,4 +129,9 @@ bool DriveManager::autoDrive(double distance){
   }
 }
 
+void DriveManager::autoTurn(double angle) {
+  turnCorrection = ((gyro->GetAngle() - gyroLast) - angle) * TURN_K;
+  turnCorrection = clampDrive(turnCorrection, -0.5, 0.5);
 
+  robotDrive->ArcadeDrive(0, turnCorrection);
+}
