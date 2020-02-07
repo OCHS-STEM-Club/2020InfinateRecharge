@@ -17,9 +17,10 @@
 #include "frc/smartdashboard/Smartdashboard.h" //Includes the smartdashboard
 
 #include <Manipulator.hpp> //Includes the ColorWheel.hpp code
-//#include <Drive.hpp>
+#include <Drive.hpp>
 //#include <vision.hpp>
 #include <Shooter.hpp>
+#include <Autonomous.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -39,7 +40,8 @@ class Robot : public frc::TimedRobot {
   std::string m_autoSelected;
 
   ManipulatorManager *manipulatorManager;
-  //DriveManager *driveManager;
+  DriveManager *driveManager;
   //VisionManager *visionManager;
   ShooterManager *shooterManager;
+  AutoManager *autoManager;
 };
