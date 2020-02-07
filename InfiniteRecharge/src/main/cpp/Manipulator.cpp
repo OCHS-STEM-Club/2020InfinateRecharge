@@ -13,7 +13,8 @@ ManipulatorManager::ManipulatorManager () {
   spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 
   trapDoorMotor = new WPI_TalonSRX(9);
-  trapDoorMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
+  trapEncoder = new frc::DigitalInput(2);
+  //trapDoorMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 
   intakeRotateMotor = new rev::CANSparkMax(10, rev::CANSparkMax::MotorType::kBrushless);
   intakeSpinMotor = new WPI_TalonSRX(11);
@@ -33,13 +34,13 @@ ManipulatorManager::ManipulatorManager () {
   //intakePidController->SetFF(0);
   intakePidController->SetOutputRange(1,-1);
 
-  trapDoorMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+  /*trapDoorMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
   //trapDoorMotor->SetSensorPhase(true);
 	//trapDoorMotor->SetInverted(false);
 	trapDoorMotor->ConfigAllowableClosedloopError(0, 0, 10);
 	trapDoorMotor->Config_kP(0, 0, 10);
 	trapDoorMotor->Config_kI(0, 0, 10);
-	trapDoorMotor->Config_kD(0, 0, 10);
+	trapDoorMotor->Config_kD(0, 0, 10);*/
 }
 
 double absDoubleM (double x) { //method that takes a varible and gets the absolute value of it
@@ -243,11 +244,25 @@ void ManipulatorManager::intake() {
   }
 
   if (xbox->GetRawButton(11)) { //fix button
-    trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
+    //trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
+    trapPosWant = 0;
   }
   if (xbox->GetRawButton(12)) { //fix button
-    trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
+    //trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
+    trapPosWant = 0;
   }
+
+  if (currentTrapEncoderState != trapEncoder->Get()){
+    if (trapDoorMotor->Get() > 0){
+      trapEncoderCount++;
+    }
+    else {
+      trapEncoderCount--;
+    }
+    currentTrapEncoderState = trapEncoder->Get();
+  }
+
+  trapDoorMotor->Set((trapPosWant - trapEncoderCount) * 0.05);
 }
 
 void ManipulatorManager::linearActuator() {
