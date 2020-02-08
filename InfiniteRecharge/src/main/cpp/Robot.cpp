@@ -17,10 +17,10 @@ Robot::Robot() {
   //driveManager = new DriveManager();
   //visionManager = new VisionManager();
   shooterManager = new ShooterManager();
+  climbManager = new ClimbManager();
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
-frc::Servo *linActuator;
 
 double visionMove;
 double visionTurn;
@@ -33,8 +33,6 @@ void Robot::RobotInit() {
 
   stick = new frc::Joystick{0}; //Assigning the joystick to USB port 0 on the driver station
 
-  linActuator = new frc::Servo(9);
-  linActuator->SetBounds(2.0, 1.8, 1, 1.2, 1.0);
 }
 
 /**
@@ -114,16 +112,6 @@ void Robot::TeleopPeriodic() {
     //shooterManager->shoot(visionRPM, true);
 	}*/
   
-  if (stick->GetRawButton(9)) {
-    linActuator->SetSpeed(1);
-  }
-  else if (stick->GetRawButton(10)) {
-    linActuator->SetSpeed(-1);
-  }
-  else {
-    linActuator->SetSpeed(0);
-    //linActuator->SetDisabled();
-  }
 }
 
 void Robot::TestPeriodic() {}

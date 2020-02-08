@@ -20,6 +20,7 @@
 //#include <Drive.hpp>
 //#include <vision.hpp>
 #include <Shooter.hpp>
+#include <Climber.hpp>
 
 class Robot : public frc::TimedRobot {
  public:
@@ -42,4 +43,5 @@ class Robot : public frc::TimedRobot {
   //DriveManager *driveManager;
   //VisionManager *visionManager;
   ShooterManager *shooterManager;
+  ClimbManager *climbManager;
 };

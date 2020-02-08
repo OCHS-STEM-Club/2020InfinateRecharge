@@ -18,11 +18,15 @@ class DriveManager {
 
     frc::DifferentialDrive *robotDrive;
     frc::Joystick *stick;
+    frc::XboxController *xbox;
 
     double xStickValue; //creates stick varibles
     double yStickValue;
 
     double currentAngle;
+
+    bool colorwheelExtended = false;
+
     public:
     DriveManager();
     void drive();
