@@ -30,6 +30,7 @@ DriveManager::DriveManager () {
 
     robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight); //object holds motor cont info and does alc for that
     stick = new frc::Joystick{0};
+    xbox = new frc::XboxController{1};
 }
 
 double absDouble (double x) { //method that takes a varible and gets the absolute value of it
@@ -65,6 +66,23 @@ double deadband(double joystickValue, double deadbandValue) { //colins special p
 void DriveManager::drive() {
     xStickValue = -deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
     yStickValue = deadband(stick->GetRawAxis(2), 0.2);
+
+    if(stick->GetRawButton(1)){
+        xStickValue *= 0.85;
+        yStickValue *= 0.85;
+    }
+
+    if(xbox->GetRawButton(5)){
+        colorwheelExtended = false;
+    }
+    else if (xbox->GetRawButton(6)){
+        colorwheelExtended = true;
+    }
+
+    if(colorwheelExtended){
+        xStickValue *= 0.5;
+        yStickValue *= 0.5;
+    }
 
     robotDrive->ArcadeDrive(xStickValue, yStickValue);
 

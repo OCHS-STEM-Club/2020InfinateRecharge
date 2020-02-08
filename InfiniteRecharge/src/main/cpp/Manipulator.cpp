@@ -266,13 +266,13 @@ void ManipulatorManager::intake() {
 }
 
 void ManipulatorManager::linearActuator() {
-    if (stick->GetRawButton(9)) {
+    if (xbox->GetRawButton(5)) {
     //linActuator->SetSpeed(1);
-    linActuator->SetPosition(1);
+    linActuator->SetPosition(0);
   }
-  else if (stick->GetRawButton(10)) {
+  else if (xbox->GetRawButton(6)) {
     //linActuator->SetSpeed(-1);
-    linActuator->SetPosition(2);
+    linActuator->SetPosition(1);
   }
   /*else {
     //linActuator->SetSpeed(0);
