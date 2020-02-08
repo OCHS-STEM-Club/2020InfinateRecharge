@@ -192,7 +192,7 @@ void ManipulatorManager::countSpins() {
   frc::SmartDashboard::PutString("Detected Color", colorString);
 }
 
-void ManipulatorManager::countSpinsEnc(){
+/*void ManipulatorManager::countSpinsEnc(){
   currentEncRot = spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0;
   frc::SmartDashboard::PutNumber("spin motor roations", currentEncRot);
 
@@ -207,7 +207,7 @@ void ManipulatorManager::countSpinsEnc(){
   else {
     spinMotor->Set(0);
   }
-}
+}*/
 
 void ManipulatorManager::intake() {
   //intakeSpinMotor->Set(deadbandM(xbox->GetRawAxis(1), 0.2));

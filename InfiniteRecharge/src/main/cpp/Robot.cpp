@@ -13,14 +13,15 @@
 
 
 Robot::Robot() {
-  manipulatorManager = new ManipulatorManager();
-  //driveManager = new DriveManager();
+  //manipulatorManager = new ManipulatorManager();
+  driveManager = new DriveManager();
   //visionManager = new VisionManager();
   shooterManager = new ShooterManager();
-  climbManager = new ClimbManager();
+  //climbManager = new ClimbManager();
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
+frc::XboxController *xbox;
 
 double visionMove;
 double visionTurn;
@@ -32,6 +33,7 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   stick = new frc::Joystick{0}; //Assigning the joystick to USB port 0 on the driver station
+  xbox = new frc::XboxController{1};
 
 }
 
@@ -81,25 +83,24 @@ void Robot::TeleopInit() {} //Initalize Teleop
 
 void Robot::TeleopPeriodic() {
   
-/*
-  if (stick->GetRawButton(12)) {
-    colorManager->colorFinder();
+ /* if (xbox->GetRawButton(7)) {
+    manipulatorManager->colorFinder();
   }
-  else if (stick->GetRawButton(11)) {
-    colorManager->countSpins();
+  else if (xbox->GetRawButton(8)) {
+    manipulatorManager->countSpins();
   }
-  else if (stick->GetRawButton(8)){
-    colorManager->countSpinsEnc();
-  }
+  //else if (stick->GetRawButton(8)){
+  //  manipulatorManager->countSpinsEnc();
+  //}
   else {
-    */manipulatorManager->manualColorSpin();/*
-  }*/
+    manipulatorManager->manualColorSpin();
+  }
 
-  //visionManager->display(); //runs vision manager once teleop starts
+  visionManager->display(); //runs vision manager once teleop starts
   //visionManager->distance(); //runs vision manager once teleop starts
   
- /* if (!stick->GetRawButton(12)) {
-		driveManager->driveTrain();//0, 0, false);
+  if (!stick->GetRawButton(12)) {
+		driveManager->drive();//0, 0, false);
     shooterManager->shoot(0, false);
 	}
 	else {
@@ -112,6 +113,9 @@ void Robot::TeleopPeriodic() {
     //shooterManager->shoot(visionRPM, true);
 	}*/
   
+  driveManager->drive();
+  //manipulatorManager->intakeTest();
+  shooterManager->shootTest();
 }
 
 void Robot::TestPeriodic() {}

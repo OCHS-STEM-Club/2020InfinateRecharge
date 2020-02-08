@@ -57,7 +57,7 @@ private:
     void manualColorSpin();
     void colorFinder();
     void countSpins();
-    void countSpinsEnc();
+    //void countSpinsEnc();
     void intake();
     void linearActuator();
     void intakeTest();

@@ -84,6 +84,10 @@ void DriveManager::drive() {
         yStickValue *= 0.5;
     }
 
+    if (stick->GetRawButton(2)) {
+        yStickValue = 0;
+    }
+
     robotDrive->ArcadeDrive(xStickValue, yStickValue);
 
     frc::SmartDashboard::PutNumber("left encoder", driveMotorLeft->GetEncoder().GetPosition()); //getting motor controller data and putting it on smart dashboard

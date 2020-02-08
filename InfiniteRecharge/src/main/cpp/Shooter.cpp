@@ -3,13 +3,13 @@
 ShooterManager::ShooterManager () {
     shootMotor = new WPI_TalonFX(12);
     shootMotor->GetSensorCollection().SetIntegratedSensorPosition(0,10);
-    shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+    //shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
     //shootMotor->SetSensorPhase(true);
 	//shootMotor->SetInverted(false);
-	shootMotor->ConfigAllowableClosedloopError(0, 0, 10);
-	shootMotor->Config_kP(0, 0, 10);
-	shootMotor->Config_kI(0, 0, 10);
-	shootMotor->Config_kD(0, 0, 10);
+	//shootMotor->ConfigAllowableClosedloopError(0, 0, 10);
+	//shootMotor->Config_kP(0, 0, 10);
+	//shootMotor->Config_kI(0, 0, 10);
+	//shootMotor->Config_kD(0, 0, 10);
 
     hoodMotor = new WPI_TalonSRX(14);
 
@@ -57,10 +57,13 @@ void ShooterManager::hoodRotate(double hoodPosition){
 
 void ShooterManager::shootTest() {
     if (xbox->GetRawButton(4)) { //fix button later
-        feederMotor->Set(0.2);
+        feederMotor->Set(0.8);
     }
-    if (xbox->GetRawButton(3)) {
-        feederMotor->Set(-0.2);
+    else if (xbox->GetRawButton(3)) {
+        feederMotor->Set(-0.8);
+    }
+    else {
+        feederMotor->Set(0);
     }
 
     hoodMotor->Set(xbox->GetRawAxis(1));
@@ -77,5 +80,6 @@ void ShooterManager::shootTest() {
     frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
 
     shootMotor->Set(xbox->GetRawAxis(5));
+    frc::SmartDashboard::PutNumber("shooter temp", shootMotor->GetTemperature());
     frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetIntegratedSensorVelocity());
 }
