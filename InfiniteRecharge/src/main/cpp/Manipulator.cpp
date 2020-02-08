@@ -218,11 +218,11 @@ void ManipulatorManager::intake() {
     intakeSpinMotor->Set(-0.3);
   }
 
-  if (xbox->GetRawButton(3) && intakeButtonToggle) {
+  if (xbox->GetPOV() == 0 && intakeButtonToggle) {
     rotateControlMode = 1;
     intakePidController->SetReference(0, rev::ControlType::kPosition);
   }
-  else if (xbox->GetRawButton(4) && intakeButtonToggle) {
+  else if (xbox->GetPOV() == 180 && intakeButtonToggle) {
     //intakePidController->SetReference(0, rev::ControlType::kPosition);
     //intakeRotateMotor->StopMotor();
     rotateControlMode = 2;
@@ -243,11 +243,11 @@ void ManipulatorManager::intake() {
     intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
   }
 
-  if (xbox->GetRawButton(11)) { //fix button
+  if (xbox->GetPOV() == 90) { //fix button
     //trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
     trapPosWant = 0;
   }
-  if (xbox->GetRawButton(12)) { //fix button
+  if (xbox->GetPOV() == 270) { //fix button
     //trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
     trapPosWant = 0;
   }
@@ -283,6 +283,7 @@ void ManipulatorManager::linearActuator() {
 void ManipulatorManager::intakeTest() {
   intakeSpinMotor->Set(deadbandM(xbox->GetRawAxis(1), 0.2));
   intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
+  frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
 
   if (xbox->GetRawButton(1)) {
     trapDoorMotor->Set(0.2);
@@ -293,4 +294,15 @@ void ManipulatorManager::intakeTest() {
   else {
     trapDoorMotor->Set(0);
   }
+
+  if (currentTrapEncoderState != trapEncoder->Get()){
+    if (trapDoorMotor->Get() > 0){
+      trapEncoderCount++;
+    }
+    else {
+      trapEncoderCount--;
+    }
+    currentTrapEncoderState = trapEncoder->Get();
+  }
+  frc::SmartDashboard::PutNumber("trap door encoder", trapEncoderCount);
 }
