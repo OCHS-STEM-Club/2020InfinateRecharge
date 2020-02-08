@@ -41,14 +41,6 @@ void ShooterManager::shoot(double velocityWant, double enabled) {
     }
 }
 
-void ShooterManager::shootTest() { //warning use only by its self
-    shootMotor->Set(xbox->GetRawAxis(5));
-    
-    if (xbox->GetRawButton(12)) { //fix button later
-        feederMotor->Set(0.2);
-    }
-}
-
 void ShooterManager::hoodRotate(double hoodPosition){
     if (currentEncoderState != hoodEncoder->Get()){
         if (hoodMotor->Get() > 0){
@@ -61,4 +53,29 @@ void ShooterManager::hoodRotate(double hoodPosition){
     }
     
     hoodMotor->Set((hoodPosition - hoodEncoderCount) * 0.05);
+}
+
+void ShooterManager::shootTest() {
+    if (xbox->GetRawButton(4)) { //fix button later
+        feederMotor->Set(0.2);
+    }
+    if (xbox->GetRawButton(3)) {
+        feederMotor->Set(-0.2);
+    }
+
+    hoodMotor->Set(xbox->GetRawAxis(1));
+
+    if (currentEncoderState != hoodEncoder->Get()){
+        if (hoodMotor->Get() > 0){
+            hoodEncoderCount++;
+        }
+        else {
+            hoodEncoderCount--;
+        }
+        currentEncoderState = hoodEncoder->Get();
+    }
+    frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
+
+    shootMotor->Set(xbox->GetRawAxis(5));
+    frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetIntegratedSensorVelocity());
 }
