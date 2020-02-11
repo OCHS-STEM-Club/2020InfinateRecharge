@@ -13,19 +13,23 @@
 
 
 Robot::Robot() {
-  manipulatorManager = new ManipulatorManager();
+  //manipulatorManager = new ManipulatorManager();
   driveManager = new DriveManager();
   //visionManager = new VisionManager();
   shooterManager = new ShooterManager();
-  autoManager = new AutoManager(driveManager);
+  //climbManager = new ClimbManager();
+  //autoManager = new AutoManager(driveManager);
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
-frc::Servo *linActuator;
+frc::XboxController *xbox;
 
 double visionMove;
 double visionTurn;
 double visionRPM;
+
+bool intakeRotateStart = true;
+bool intakeRotateStartCompleted = false;
 
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -33,9 +37,8 @@ void Robot::RobotInit() {
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
 
   stick = new frc::Joystick{0}; //Assigning the joystick to USB port 0 on the driver station
+  xbox = new frc::XboxController{1};
 
-  linActuator = new frc::Servo(9);
-  linActuator->SetBounds(2.0, 1.8, 1, 1.2, 1.0);
 }
 
 /**
@@ -78,31 +81,34 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+
+  /*if (! intakeRotateStartCompleted) {
+    manipulatorManager->intakeStartup();
+  } */
 }
 
 void Robot::TeleopInit() {} //Initalize Teleop
 
 void Robot::TeleopPeriodic() {
   
-/*
-  if (stick->GetRawButton(12)) {
-    colorManager->colorFinder();
+ /* if (xbox->GetRawButton(7)) {
+    manipulatorManager->colorFinder();
   }
-  else if (stick->GetRawButton(11)) {
-    colorManager->countSpins();
+  else if (xbox->GetRawButton(8)) {
+    manipulatorManager->countSpins();
   }
-  else if (stick->GetRawButton(8)){
-    colorManager->countSpinsEnc();
-  }
+  //else if (stick->GetRawButton(8)){
+  //  manipulatorManager->countSpinsEnc();
+  //}
   else {
-    */manipulatorManager->manualColorSpin();/*
-  }*/
+    manipulatorManager->manualColorSpin();
+  }
 
-  //visionManager->display(); //runs vision manager once teleop starts
+  visionManager->display(); //runs vision manager once teleop starts
   //visionManager->distance(); //runs vision manager once teleop starts
   
- /* if (!stick->GetRawButton(12)) {
-		driveManager->driveTrain();//0, 0, false);
+  if (!stick->GetRawButton(12)) {
+		driveManager->drive();//0, 0, false);
     shooterManager->shoot(0, false);
 	}
 	else {
@@ -115,16 +121,9 @@ void Robot::TeleopPeriodic() {
     //shooterManager->shoot(visionRPM, true);
 	}*/
   
-  if (stick->GetRawButton(9)) {
-    linActuator->SetSpeed(1);
-  }
-  else if (stick->GetRawButton(10)) {
-    linActuator->SetSpeed(-1);
-  }
-  else {
-    linActuator->SetSpeed(0);
-    //linActuator->SetDisabled();
-  }
+  driveManager->drive();
+  //manipulatorManager->intakeTest();
+  shooterManager->shootTest();
 }
 
 void Robot::TestPeriodic() {}

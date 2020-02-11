@@ -1,26 +1,85 @@
 #include <Shooter.hpp>
 
 ShooterManager::ShooterManager () {
-    shootMotor = new rev::CANSparkMax(9, rev::CANSparkMax::MotorType::kBrushless);
-    shootMotor->GetEncoder().SetPosition(0);
+    shootMotor = new WPI_TalonFX(12);
+    shootMotor->GetSensorCollection().SetIntegratedSensorPosition(0,10);
+    //shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+    //shootMotor->SetSensorPhase(true);
+	//shootMotor->SetInverted(false);
+	//shootMotor->ConfigAllowableClosedloopError(0, 0, 10);
+	//shootMotor->Config_kP(0, 0, 10);
+	//shootMotor->Config_kI(0, 0, 10);
+	//shootMotor->Config_kD(0, 0, 10);
 
-    pidController = new rev::CANPIDController(*shootMotor);
-    pidController->SetP(0);
-    pidController->SetI(0);
-    pidController->SetD(0);
-    //pidController->SetIZone(0);
-    //pidController->SetFF(0);
-    pidController->SetOutputRange(1,-1);
+    hoodMotor = new WPI_TalonSRX(14);
+
+    feederMotor = new WPI_TalonSRX(13);
+    xbox = new frc::XboxController{1};
+    hoodEncoder = new frc::DigitalInput(1);
+    currentEncoderState = hoodEncoder->Get();
 }
 
 void ShooterManager::shoot(double velocityWant, double enabled) {
-    velocityAct = shootMotor->GetEncoder().GetPosition();
+    velocityAct = shootMotor->GetSensorCollection().GetIntegratedSensorVelocity();
     frc::SmartDashboard::PutNumber("shooter rpm", velocityAct);
 
     if (enabled) {
-        pidController->SetReference(velocityWant, rev::ControlType::kVelocity);
+        shootMotor->Set(ControlMode::Velocity, velocityWant); //replace 0 with correct
     }
     else {
         shootMotor->Set(0);
     }
+
+    if ((velocityAct - velocityWant) < 20 && xbox->GetRawButton(12) ) { //fix button later and allowable error
+        feederMotor->Set(0.2);
+    }
+    /*else if (xbox->GetRawButton(12)) { //fix button later
+        feederMotor->Set(0.2);
+    }*/
+    else {
+        feederMotor->Set(0); 
+    }
+}
+
+void ShooterManager::hoodRotate(double hoodPosition){
+    if (currentEncoderState != hoodEncoder->Get()){
+        if (hoodMotor->Get() > 0){
+            hoodEncoderCount++;
+        }
+        else {
+            hoodEncoderCount--;
+        }
+        currentEncoderState = hoodEncoder->Get();
+    }
+    
+    hoodMotor->Set((hoodPosition - hoodEncoderCount) * 0.05);
+}
+
+void ShooterManager::shootTest() {
+    if (xbox->GetRawButton(4)) { //fix button later
+        feederMotor->Set(0.8);
+    }
+    else if (xbox->GetRawButton(3)) {
+        feederMotor->Set(-0.8);
+    }
+    else {
+        feederMotor->Set(0);
+    }
+
+    hoodMotor->Set(xbox->GetRawAxis(1));
+
+    if (currentEncoderState != hoodEncoder->Get()){
+        if (hoodMotor->Get() > 0){
+            hoodEncoderCount++;
+        }
+        else {
+            hoodEncoderCount--;
+        }
+        currentEncoderState = hoodEncoder->Get();
+    }
+    frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
+
+    shootMotor->Set(xbox->GetRawAxis(5));
+    frc::SmartDashboard::PutNumber("shooter temp", shootMotor->GetTemperature());
+    frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetIntegratedSensorVelocity());
 }

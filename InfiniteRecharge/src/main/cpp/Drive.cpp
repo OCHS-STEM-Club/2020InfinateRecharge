@@ -1,35 +1,37 @@
 #include <Drive.hpp>
 
 DriveManager::DriveManager () {
-  driveMotorLeft = new rev::CANSparkMax(2, rev::CANSparkMax::MotorType::kBrushless);
-  driveMotorRight = new rev::CANSparkMax(3, rev::CANSparkMax::MotorType::kBrushless);
+    driveMotorLeft = new rev::CANSparkMax(2, rev::CANSparkMax::MotorType::kBrushless);
+    driveMotorRight = new rev::CANSparkMax(3, rev::CANSparkMax::MotorType::kBrushless);
 
-  slaveMotorLeft1 = new rev::CANSparkMax(4, rev::CANSparkMax::MotorType::kBrushless);
-  slaveMotorLeft2 = new rev::CANSparkMax(5, rev::CANSparkMax::MotorType::kBrushless);
-  slaveMotorRight1 = new rev::CANSparkMax(6, rev::CANSparkMax::MotorType::kBrushless);
-  slaveMotorRight2 = new rev::CANSparkMax(7, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorLeft1 = new rev::CANSparkMax(4, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorLeft2 = new rev::CANSparkMax(5, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorRight1 = new rev::CANSparkMax(6, rev::CANSparkMax::MotorType::kBrushless);
+    slaveMotorRight2 = new rev::CANSparkMax(7, rev::CANSparkMax::MotorType::kBrushless);
 
-  slaveMotorLeft1->Follow(*driveMotorLeft, false); //follows drive motor left
-  slaveMotorLeft2->Follow(*driveMotorLeft, false);
-  slaveMotorRight1->Follow(*driveMotorRight, false);
-  slaveMotorRight2->Follow(*driveMotorRight, false);
+    slaveMotorLeft1->Follow(*driveMotorLeft, false); //follows drive motor left
+    slaveMotorLeft2->Follow(*driveMotorLeft, false);
+    slaveMotorRight1->Follow(*driveMotorRight, false);
+    slaveMotorRight2->Follow(*driveMotorRight, false);
 
-  driveMotorLeft->SetSmartCurrentLimit(60); //sets max current limit
-  driveMotorRight->SetSmartCurrentLimit(60); //defalt is 80
-  slaveMotorLeft1->SetSmartCurrentLimit(60);
-  slaveMotorLeft2->SetSmartCurrentLimit(60);
-  slaveMotorRight1->SetSmartCurrentLimit(60);
-  slaveMotorRight2->SetSmartCurrentLimit(60); 
+    driveMotorLeft->SetSmartCurrentLimit(60); //sets max current limit
+    driveMotorRight->SetSmartCurrentLimit(60); //defalt is 80
+    slaveMotorLeft1->SetSmartCurrentLimit(60);
+    slaveMotorLeft2->SetSmartCurrentLimit(60);
+    slaveMotorRight1->SetSmartCurrentLimit(60);
+    slaveMotorRight2->SetSmartCurrentLimit(60); 
 
-  /*leftDriveEnc = new rev::CANEncoder(*driveMotorLeft); //creates encoder object
-  rightDriveEnc = new rev::CANEncoder(*driveMotorRight);
-  leftDriveEnc->SetPosition(0); //sets encoder object to 0
-  rightDriveEnc->SetPosition(0);*/
-  driveMotorLeft->GetEncoder().SetPosition(0);
-  driveMotorRight->GetEncoder().SetPosition(0);
+    /*leftDriveEnc = new rev::CANEncoder(*driveMotorLeft); //creates encoder object
+    rightDriveEnc = new rev::CANEncoder(*driveMotorRight);
+    leftDriveEnc->SetPosition(0); //sets encoder object to 0
+    rightDriveEnc->SetPosition(0);*/
+    driveMotorLeft->GetEncoder().SetPosition(0);
+    driveMotorRight->GetEncoder().SetPosition(0);
 
-  robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight); //object holds motor cont info and does alc for that
-  stick = new frc::Joystick{0};
+    robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight); //object holds motor cont info and does alc for that
+    stick = new frc::Joystick{0};
+    xbox = new frc::XboxController{1};
+}
 
   try{
 		gyro = new AHRS(SPI::Port::kMXP);
@@ -66,6 +68,27 @@ double deadband(double joystickValue, double deadbandValue) { //colins special p
 void DriveManager::drive() {
     xStickValue = -deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
     yStickValue = deadband(stick->GetRawAxis(2), 0.2);
+
+    if(stick->GetRawButton(1)){
+        xStickValue *= 0.85;
+        yStickValue *= 0.85;
+    }
+
+    if(xbox->GetRawButton(5)){
+        colorwheelExtended = false;
+    }
+    else if (xbox->GetRawButton(6)){
+        colorwheelExtended = true;
+    }
+
+    if(colorwheelExtended){
+        xStickValue *= 0.5;
+        yStickValue *= 0.5;
+    }
+
+    if (stick->GetRawButton(2)) {
+        yStickValue = 0;
+    }
 
     robotDrive->ArcadeDrive(xStickValue, yStickValue);
 

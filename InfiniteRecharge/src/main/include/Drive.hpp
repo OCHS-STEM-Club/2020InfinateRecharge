@@ -21,6 +21,7 @@ class DriveManager {
 
     frc::DifferentialDrive *robotDrive;
     frc::Joystick *stick;
+    frc::XboxController *xbox;
 
     AHRS *gyro;
 
@@ -38,6 +39,10 @@ class DriveManager {
     double rightEncLast;
     double gyroLast;
     double turnCorrection;
+
+    double currentAngle;
+
+    bool colorwheelExtended = false;
 
     public:
     DriveManager();

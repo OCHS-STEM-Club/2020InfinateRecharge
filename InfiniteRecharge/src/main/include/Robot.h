@@ -16,11 +16,15 @@
 
 #include "frc/smartdashboard/Smartdashboard.h" //Includes the smartdashboard
 
-#include <Manipulator.hpp> //Includes the ColorWheel.hpp code
+//#include <Manipulator.hpp> //Includes the ColorWheel.hpp code
 #include <Drive.hpp>
 //#include <vision.hpp>
 #include <Shooter.hpp>
-#include <Autonomous.hpp>
+//#include <Autonomous.hpp>
+//#include <Climber.hpp>
+
+extern bool intakeRotateStart;
+extern bool intakeRotateStartCompleted;
 
 class Robot : public frc::TimedRobot {
  public:
@@ -39,9 +43,10 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  ManipulatorManager *manipulatorManager;
+  //AutoManager *autoManager;
+  //ManipulatorManager *manipulatorManager;
   DriveManager *driveManager;
   //VisionManager *visionManager;
   ShooterManager *shooterManager;
-  AutoManager *autoManager;
+  //ClimbManager *climbManager;
 };
