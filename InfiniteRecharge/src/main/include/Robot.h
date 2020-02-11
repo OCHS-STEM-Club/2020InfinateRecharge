@@ -22,6 +22,9 @@
 #include <Shooter.hpp>
 //#include <Climber.hpp>
 
+extern bool intakeRotateStart;
+extern bool intakeRotateStartCompleted;
+
 class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
@@ -44,4 +47,5 @@ class Robot : public frc::TimedRobot {
   //VisionManager *visionManager;
   ShooterManager *shooterManager;
   //ClimbManager *climbManager;
+
 };

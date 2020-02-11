@@ -12,10 +12,6 @@ ManipulatorManager::ManipulatorManager () {
   spinMotor = new WPI_TalonSRX(8);
   spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 
-  trapDoorMotor = new WPI_TalonSRX(9);
-  trapEncoder = new frc::DigitalInput(2);
-  //trapDoorMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
-
   intakeRotateMotor = new rev::CANSparkMax(10, rev::CANSparkMax::MotorType::kBrushless);
   intakeSpinMotor = new WPI_TalonSRX(11);
 
@@ -34,13 +30,8 @@ ManipulatorManager::ManipulatorManager () {
   //intakePidController->SetFF(0);
   intakePidController->SetOutputRange(1,-1);
 
-  /*trapDoorMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
-  //trapDoorMotor->SetSensorPhase(true);
-	//trapDoorMotor->SetInverted(false);
-	trapDoorMotor->ConfigAllowableClosedloopError(0, 0, 10);
-	trapDoorMotor->Config_kP(0, 0, 10);
-	trapDoorMotor->Config_kI(0, 0, 10);
-	trapDoorMotor->Config_kD(0, 0, 10);*/
+  timer = new frc::Timer();
+	//timer->Start();
 }
 
 double absDoubleM (double x) { //method that takes a varible and gets the absolute value of it
@@ -243,26 +234,6 @@ void ManipulatorManager::intake() {
     intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
   }
 
-  if (xbox->GetPOV() == 90) { //fix button
-    //trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
-    trapPosWant = 0;
-  }
-  if (xbox->GetPOV() == 270) { //fix button
-    //trapDoorMotor->Set(ControlMode::Position, 0); //replace 0 with correct
-    trapPosWant = 0;
-  }
-
-  if (currentTrapEncoderState != trapEncoder->Get()){
-    if (trapDoorMotor->Get() > 0){
-      trapEncoderCount++;
-    }
-    else {
-      trapEncoderCount--;
-    }
-    currentTrapEncoderState = trapEncoder->Get();
-  }
-
-  trapDoorMotor->Set((trapPosWant - trapEncoderCount) * 0.05);
 }
 
 void ManipulatorManager::linearActuator() {
@@ -284,25 +255,26 @@ void ManipulatorManager::intakeTest() {
   intakeSpinMotor->Set(deadbandM(xbox->GetRawAxis(1), 0.2));
   intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
   frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
+  frc::SmartDashboard::PutNumber("intake rotate power", intakeRotateMotor->Get());
+}
 
-  if (xbox->GetRawButton(1)) {
-    trapDoorMotor->Set(0.2);
+void ManipulatorManager::intakeStartup() {
+  if (intakeRotateStart) {
+    timer->Reset();
+    timer->Start();
+    intakeRotateStart = false;
   }
-  else if (xbox->GetRawButton(2)) {
-    trapDoorMotor->Set(-0.2);
+
+  if (timer->Get() < 0.2) {
+    intakeRotateMotor->Set(0.05);
   }
   else {
-    trapDoorMotor->Set(0);
-  }
-
-  if (currentTrapEncoderState != trapEncoder->Get()){
-    if (trapDoorMotor->Get() > 0){
-      trapEncoderCount++;
+    if (intakeRotateMotor->GetEncoder().GetPosition() > 0) { //replace 0 with desired location
+      intakeRotateMotor->Set(-0.2);
     }
     else {
-      trapEncoderCount--;
+      intakeRotateMotor->Set(0);
+      intakeRotateStartCompleted = true;
     }
-    currentTrapEncoderState = trapEncoder->Get();
   }
-  frc::SmartDashboard::PutNumber("trap door encoder", trapEncoderCount);
 }

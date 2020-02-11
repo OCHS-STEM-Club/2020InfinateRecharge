@@ -27,6 +27,9 @@ double visionMove;
 double visionTurn;
 double visionRPM;
 
+bool intakeRotateStart = true;
+bool intakeRotateStartCompleted = false;
+
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -77,6 +80,10 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+
+  /*if (! intakeRotateStartCompleted) {
+    manipulatorManager->intakeStartup();
+  } */
 }
 
 void Robot::TeleopInit() {} //Initalize Teleop

@@ -5,6 +5,7 @@
 #include <rev/CANSparkMax.h>
 #include "rev/ColorSensorV3.h"
 #include "rev/ColorMatch.h"
+#include <Robot.h>
 
 #define COLORWHEELRATIO 0.25 //4/16
 
@@ -26,8 +27,6 @@ private:
     frc::XboxController *xbox;
 
     WPI_TalonSRX *spinMotor;
-    WPI_TalonSRX *trapDoorMotor;
-    frc::DigitalInput *trapEncoder;
 
     rev::CANSparkMax *intakeRotateMotor;
     WPI_TalonSRX *intakeSpinMotor;
@@ -35,6 +34,8 @@ private:
     frc::Servo *linActuator;
 
     rev::CANPIDController *intakePidController;
+
+    frc::Timer *timer;
 
     double xStickValue;
     std::string gameData;
@@ -47,10 +48,6 @@ private:
 
     bool intakeButtonToggle = true;
     int rotateControlMode = 0;
-    
-    bool currentTrapEncoderState;
-    int trapEncoderCount = 0;
-    double trapPosWant;
 
  public:
     ManipulatorManager();
@@ -61,4 +58,5 @@ private:
     void intake();
     void linearActuator();
     void intakeTest();
+    void intakeStartup();
 };
