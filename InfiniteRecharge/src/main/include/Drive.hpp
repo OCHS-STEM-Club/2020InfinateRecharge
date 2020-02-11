@@ -4,7 +4,7 @@
 #include <rev/CANSparkMax.h>
 #include <AHRS.h>
 
-#define TURN_K -0.3
+#define TURN_K -0.5
 
 class DriveManager { 
     private:
@@ -43,6 +43,7 @@ class DriveManager {
     double currentAngle;
 
     bool colorwheelExtended = false;
+    bool b = true;
 
     public:
     DriveManager();

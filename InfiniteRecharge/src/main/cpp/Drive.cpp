@@ -31,7 +31,6 @@ DriveManager::DriveManager () {
     robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight); //object holds motor cont info and does alc for that
     stick = new frc::Joystick{0};
     xbox = new frc::XboxController{1};
-}
 
   try{
 		gyro = new AHRS(SPI::Port::kMXP);
@@ -133,18 +132,23 @@ void DriveManager::autoPrep() {
 bool DriveManager::autoDrive(double distance){
   leftCurrentPos = driveMotorLeft->GetEncoder().GetPosition() - leftEncLast;
   rightCurrentPos = driveMotorRight->GetEncoder().GetPosition() - rightEncLast;
+  if (b) {
   revNeed = distanceToRev(distance);
+  b = false;
+  }
 
   leftOffset = revNeed - leftCurrentPos;
   rightOffset = revNeed - rightCurrentPos;
   avgOffset = (rightOffset + leftOffset)/2.0;
 
   power = avgOffset / (revNeed / 2);
-  power = clampDrive(power,-0.5,0.5);
+  power = clampDrive(power,-0.2,0.2);
   turnCorrection = (gyro->GetAngle() - gyroLast) * TURN_K;
-  robotDrive->ArcadeDrive(power, turnCorrection);
-
-  if (avgOffset < 2){
+  robotDrive->ArcadeDrive(power, 0);
+frc::SmartDashboard::PutNumber("auto power", power);
+frc::SmartDashboard::PutNumber("avg offset", avgOffset);
+  if (fabs(avgOffset) < 2){
+      robotDrive->ArcadeDrive(0,0);
     return true;    
   }
   else {
