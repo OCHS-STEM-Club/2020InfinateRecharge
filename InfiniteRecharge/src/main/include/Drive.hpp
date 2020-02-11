@@ -2,6 +2,9 @@
 
 #include <frc/WPILib.h> 
 #include <rev/CANSparkMax.h>
+#include <AHRS.h>
+
+#define TURN_K -0.3
 
 class DriveManager { 
     private:
@@ -20,8 +23,22 @@ class DriveManager {
     frc::Joystick *stick;
     frc::XboxController *xbox;
 
+    AHRS *gyro;
+
     double xStickValue; //creates stick varibles
     double yStickValue;
+
+    double revNeed;
+    double leftOffset;
+    double rightOffset;
+    double avgOffset;
+    double leftCurrentPos;
+    double rightCurrentPos;
+    double power;
+    double leftEncLast;
+    double rightEncLast;
+    double gyroLast;
+    double turnCorrection;
 
     double currentAngle;
 
@@ -31,4 +48,7 @@ class DriveManager {
     DriveManager();
     void drive();
     void subclassTurn(double turnValue, double moveValue);
+    bool autoDrive(double distance);
+    void autoPrep();
+    void autoTurn(double angle);
 }; 

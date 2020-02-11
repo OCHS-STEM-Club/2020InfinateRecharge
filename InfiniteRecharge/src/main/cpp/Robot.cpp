@@ -18,6 +18,7 @@ Robot::Robot() {
   //visionManager = new VisionManager();
   shooterManager = new ShooterManager();
   //climbManager = new ClimbManager();
+  //autoManager = new AutoManager(driveManager);
 }  
 
 frc::Joystick *stick; //Initialzing the joystick

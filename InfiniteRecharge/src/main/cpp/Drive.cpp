@@ -33,13 +33,15 @@ DriveManager::DriveManager () {
     xbox = new frc::XboxController{1};
 }
 
-double absDouble (double x) { //method that takes a varible and gets the absolute value of it
-  if (x < 0) {
-    return -x;
-  }
-  else {
-    return x;
-  }
+  try{
+		gyro = new AHRS(SPI::Port::kMXP);
+	}
+	catch(std::exception ex){
+		std::string err_string = "Error initalizing navX-MXP: ";
+		err_string += ex.what();
+		DriverStation::ReportError(err_string.c_str());
+	}
+	gyro->Reset();
 }
 
 int Sign(double input) { //method that returns numbers for its relation to 0
@@ -55,7 +57,7 @@ int Sign(double input) { //method that returns numbers for its relation to 0
 }
 
 double deadband(double joystickValue, double deadbandValue) { //colins special proportioanl deadband thingy just copy
-    if(absDouble(joystickValue) < 0.2){
+    if(fabs(joystickValue) < 0.2){
         return 0;
     }
     else{
@@ -103,3 +105,56 @@ void DriveManager::subclassTurn(double turnValue, double moveValue) { //allows d
     robotDrive->ArcadeDrive(moveValue, turnValue);
 }
 
+double distanceToRev(double in){
+    in *= 12;
+    in /= 18.84;
+    in *= 7.18;
+    return in;
+}
+
+double clampDrive(double in,double minval,double maxval) {
+  if (in > maxval) {
+    return maxval;
+  }
+  else if (in < minval) {
+    return minval;
+  }
+  else {
+    return in;
+  }
+}
+
+void DriveManager::autoPrep() {
+  leftEncLast = driveMotorLeft->GetEncoder().GetPosition();
+  rightEncLast = driveMotorRight->GetEncoder().GetPosition();
+  gyroLast = gyro->GetAngle();
+}
+
+bool DriveManager::autoDrive(double distance){
+  leftCurrentPos = driveMotorLeft->GetEncoder().GetPosition() - leftEncLast;
+  rightCurrentPos = driveMotorRight->GetEncoder().GetPosition() - rightEncLast;
+  revNeed = distanceToRev(distance);
+
+  leftOffset = revNeed - leftCurrentPos;
+  rightOffset = revNeed - rightCurrentPos;
+  avgOffset = (rightOffset + leftOffset)/2.0;
+
+  power = avgOffset / (revNeed / 2);
+  power = clampDrive(power,-0.5,0.5);
+  turnCorrection = (gyro->GetAngle() - gyroLast) * TURN_K;
+  robotDrive->ArcadeDrive(power, turnCorrection);
+
+  if (avgOffset < 2){
+    return true;    
+  }
+  else {
+    return false;
+  }
+}
+
+void DriveManager::autoTurn(double angle) {
+  turnCorrection = ((gyro->GetAngle() - gyroLast) - angle) * TURN_K;
+  turnCorrection = clampDrive(turnCorrection, -0.5, 0.5);
+
+  robotDrive->ArcadeDrive(0, turnCorrection);
+}
