@@ -3,6 +3,7 @@
 #include <frc/WPILib.h> 
 #include <rev/CANSparkMax.h>
 #include <AHRS.h>
+//#include <Robot.h>
 
 #define TURN_K -0.5
 
@@ -29,11 +30,10 @@ class DriveManager {
     double yStickValue;
 
     double revNeed;
-    double leftOffset;
-    double rightOffset;
-    double avgOffset;
+    double offset;
     double leftCurrentPos;
     double rightCurrentPos;
+    double avgPosition;
     double power;
     double leftEncLast;
     double rightEncLast;
@@ -43,13 +43,12 @@ class DriveManager {
     double currentAngle;
 
     bool colorwheelExtended = false;
-    bool b = true;
 
     public:
     DriveManager();
     void drive();
     void subclassTurn(double turnValue, double moveValue);
-    bool autoDrive(double distance);
+    void autoDrive(double distance);
     void autoPrep();
     void autoTurn(double angle);
 }; 

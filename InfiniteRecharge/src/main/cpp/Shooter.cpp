@@ -1,8 +1,8 @@
 #include <Shooter.hpp>
 
 ShooterManager::ShooterManager () {
-    shootMotor = new WPI_TalonFX(12);
-    shootMotor->GetSensorCollection().SetIntegratedSensorPosition(0,10);
+    shootMotor = new WPI_TalonSRX(12);
+    //shootMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
     //shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
     //shootMotor->SetSensorPhase(true);
 	//shootMotor->SetInverted(false);
@@ -20,7 +20,7 @@ ShooterManager::ShooterManager () {
 }
 
 void ShooterManager::shoot(double velocityWant, double enabled) {
-    velocityAct = shootMotor->GetSensorCollection().GetIntegratedSensorVelocity();
+    velocityAct = shootMotor->GetSensorCollection().GetQuadratureVelocity();
     frc::SmartDashboard::PutNumber("shooter rpm", velocityAct);
 
     if (enabled) {
@@ -66,7 +66,7 @@ void ShooterManager::shootTest() {
         feederMotor->Set(0);
     }
 
-    hoodMotor->Set(xbox->GetRawAxis(1));
+    //hoodMotor->Set(xbox->GetRawAxis(1));
 
     if (currentEncoderState != hoodEncoder->Get()){
         if (hoodMotor->Get() > 0){
@@ -80,6 +80,6 @@ void ShooterManager::shootTest() {
     frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
 
     shootMotor->Set(xbox->GetRawAxis(5));
-    frc::SmartDashboard::PutNumber("shooter temp", shootMotor->GetTemperature());
-    frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetIntegratedSensorVelocity());
+    //frc::SmartDashboard::PutNumber("shooter temp", shootMotor->GetTemperature());
+    frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetQuadratureVelocity());
 }

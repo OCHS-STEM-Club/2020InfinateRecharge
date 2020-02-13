@@ -6,7 +6,7 @@
 
 class ShooterManager { 
     private:
-    WPI_TalonFX *shootMotor;
+    WPI_TalonSRX *shootMotor;
 
     WPI_TalonSRX *feederMotor;
     WPI_TalonSRX *hoodMotor;

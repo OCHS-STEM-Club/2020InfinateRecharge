@@ -11,12 +11,15 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 
+bool intakeRotateStart = true;
+bool intakeRotateStartCompleted = false;
+int autoStep = 0;
 
 Robot::Robot() {
-  //manipulatorManager = new ManipulatorManager();
-  driveManager = new DriveManager();
+  manipulatorManager = new ManipulatorManager();
+  //driveManager = new DriveManager();
   //visionManager = new VisionManager();
-  //shooterManager = new ShooterManager();
+  shooterManager = new ShooterManager();
   //climbManager = new ClimbManager();
   //autoManager = new AutoManager(driveManager);
 }  
@@ -28,8 +31,6 @@ double visionMove;
 double visionTurn;
 double visionRPM;
 
-bool intakeRotateStart = true;
-bool intakeRotateStartCompleted = false;
 
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
@@ -74,9 +75,9 @@ void Robot::AutonomousInit() {
     // Default Auto goes here
   }
 
-  driveManager->autoPrep();
+  //driveManager->autoPrep();
 }
-bool a =false;
+
 void Robot::AutonomousPeriodic() {
   if (m_autoSelected == kAutoNameCustom) {
     // Custom Auto goes here
@@ -87,9 +88,10 @@ void Robot::AutonomousPeriodic() {
   /*if (! intakeRotateStartCompleted) {
     manipulatorManager->intakeStartup();
   } */
-  if (!a) {
-  a = driveManager->autoDrive(1);
+  if (false){//autoStep == 0) {
+    //driveManager->autoDrive(1); 
   }
+
 }
 
 void Robot::TeleopInit() {} //Initalize Teleop
@@ -126,9 +128,9 @@ void Robot::TeleopPeriodic() {
     //shooterManager->shoot(visionRPM, true);
 	}*/
   
-  driveManager->drive();
-  //manipulatorManager->intakeTest();
-  //shooterManager->shootTest();
+  //driveManager->drive();
+  manipulatorManager->intakeTest();
+  shooterManager->shootTest();
 }
 
 void Robot::TestPeriodic() {}

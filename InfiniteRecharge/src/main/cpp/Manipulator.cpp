@@ -1,4 +1,5 @@
 #include <Manipulator.hpp>
+//#include <Robot.h>
 
 ManipulatorManager::ManipulatorManager () {
   m_colorMatcher.AddColorMatch(kBlueTarget);
@@ -253,16 +254,18 @@ void ManipulatorManager::linearActuator() {
 
 void ManipulatorManager::intakeTest() {
   intakeSpinMotor->Set(deadbandM(xbox->GetRawAxis(1), 0.2));
-  intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
-  frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
-  frc::SmartDashboard::PutNumber("intake rotate power", intakeRotateMotor->Get());
+  frc::SmartDashboard::PutNumber("intake percent", intakeSpinMotor->Get());
+
+  //intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
+  //frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
+  //frc::SmartDashboard::PutNumber("intake rotate power", intakeRotateMotor->Get());
 }
 
 void ManipulatorManager::intakeStartup() {
-  if (intakeRotateStart) {
+  if (false){//intakeRotateStart) {
     timer->Reset();
     timer->Start();
-    intakeRotateStart = false;
+    //intakeRotateStart = false;
   }
 
   if (timer->Get() < 0.2) {
@@ -274,7 +277,7 @@ void ManipulatorManager::intakeStartup() {
     }
     else {
       intakeRotateMotor->Set(0);
-      intakeRotateStartCompleted = true;
+      //intakeRotateStartCompleted = true;
     }
   }
 }

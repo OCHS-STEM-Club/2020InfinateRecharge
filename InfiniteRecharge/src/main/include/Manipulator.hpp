@@ -5,7 +5,6 @@
 #include <rev/CANSparkMax.h>
 #include "rev/ColorSensorV3.h"
 #include "rev/ColorMatch.h"
-#include <Robot.h>
 
 #define COLORWHEELRATIO 0.25 //4/16
 

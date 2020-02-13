@@ -1,4 +1,5 @@
 #include <Drive.hpp>
+#include <Robot.h>
 
 DriveManager::DriveManager () {
     driveMotorLeft = new rev::CANSparkMax(2, rev::CANSparkMax::MotorType::kBrushless);
@@ -129,31 +130,35 @@ void DriveManager::autoPrep() {
   gyroLast = gyro->GetAngle();
 }
 
-bool DriveManager::autoDrive(double distance){
+void DriveManager::autoDrive(double distance){
   leftCurrentPos = driveMotorLeft->GetEncoder().GetPosition() - leftEncLast;
   rightCurrentPos = driveMotorRight->GetEncoder().GetPosition() - rightEncLast;
-  if (b) {
+
   revNeed = distanceToRev(distance);
-  b = false;
-  }
 
-  leftOffset = revNeed - leftCurrentPos;
-  rightOffset = revNeed - rightCurrentPos;
-  avgOffset = (rightOffset + leftOffset)/2.0;
+  avgPosition = (leftCurrentPos + rightCurrentPos) / 2.0;
+  offset = revNeed - avgPosition;
 
-  power = avgOffset / (revNeed / 2);
+  power = offset / (revNeed / 2);
   power = clampDrive(power,-0.2,0.2);
+
   turnCorrection = (gyro->GetAngle() - gyroLast) * TURN_K;
   robotDrive->ArcadeDrive(power, 0);
-frc::SmartDashboard::PutNumber("auto power", power);
-frc::SmartDashboard::PutNumber("avg offset", avgOffset);
-  if (fabs(avgOffset) < 2){
-      robotDrive->ArcadeDrive(0,0);
-    return true;    
+
+  if (offset < 2){
+    robotDrive->ArcadeDrive(0,0);
+      
   }
   else {
-    return false;
+    autoStep++;
   }
+
+  frc::SmartDashboard::PutNumber("auto power", power);
+  frc::SmartDashboard::PutNumber("offset", offset);
+  frc::SmartDashboard::PutNumber("rev want", revNeed);
+  frc::SmartDashboard::PutNumber("avg position", avgPosition);
+  frc::SmartDashboard::PutNumber("left pos", leftCurrentPos);
+  frc::SmartDashboard::PutNumber("right pos", rightCurrentPos);
 }
 
 void DriveManager::autoTurn(double angle) {
