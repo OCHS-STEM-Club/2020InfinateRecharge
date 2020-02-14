@@ -11,11 +11,14 @@ ClimbManager::ClimbManager () {
 	climbMotor->Config_kI(0, 0, 10);
 	climbMotor->Config_kD(0, 0, 10);
 
+    //stick = new frc::Joystick {0};
     xbox = new frc::XboxController{1};
+    //driveXbox = new frc::XboxController{2};
 }
 
 void ClimbManager::climb() {
     pov = xbox->GetPOV();
+    //pov = driveXbox->GetPOV();
     if (pov == 0){
         climbMotor->Set(ControlMode::Position, 0); 
     }
@@ -23,5 +26,16 @@ void ClimbManager::climb() {
         climbMotor->Set(ControlMode::Position, 0); 
     }
 
+   /* if (stick->GetRawButton(7)) {
+        climbMotor->Set(ControlMode::Position, 0); 
+    }
+    else if (stick->GetRawButton(8)) {
+        climbMotor->Set(ControlMode::Position, 0); 
+    }*/
+
     //climbMotor->Set(ControlMode::PercentOutput, xbox->GetRawAxis(5));
 }  
+
+void ClimbManager::climbTest() {
+    climbMotor->Set(ControlMode::PercentOutput, xbox->GetRawAxis(5));
+}

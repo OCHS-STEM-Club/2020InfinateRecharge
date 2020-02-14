@@ -66,7 +66,7 @@ void ShooterManager::shootTest() {
         feederMotor->Set(0);
     }
 
-    //hoodMotor->Set(xbox->GetRawAxis(1));
+    hoodMotor->Set(xbox->GetRawAxis(1));
 
     if (currentEncoderState != hoodEncoder->Get()){
         if (hoodMotor->Get() > 0){

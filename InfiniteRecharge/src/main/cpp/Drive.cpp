@@ -32,6 +32,7 @@ DriveManager::DriveManager () {
     robotDrive = new frc::DifferentialDrive(*driveMotorLeft, *driveMotorRight); //object holds motor cont info and does alc for that
     stick = new frc::Joystick{0};
     xbox = new frc::XboxController{1};
+    //xboxDrive = new frc::XboxController{2};
 
   try{
 		gyro = new AHRS(SPI::Port::kMXP);
@@ -68,27 +69,36 @@ double deadband(double joystickValue, double deadbandValue) { //colins special p
 void DriveManager::drive() {
     xStickValue = -deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
     yStickValue = deadband(stick->GetRawAxis(2), 0.2);
+    //xStickValue = xboxDrive->GetRawAxis(1);
+    //yStickValue = xboxDrive->GetRawAxis(4);
 
     if(stick->GetRawButton(1)){
-        xStickValue *= 0.85;
-        yStickValue *= 0.85;
+      xStickValue *= 0.85;
+      yStickValue *= 0.85;
     }
+    /*if (xboxDrive->GetRawAxis(3) > 0.9) {
+      xStickValue *= 0.85;
+      yStickValue *= 0.85;
+    }*/
 
     if(xbox->GetRawButton(5)){
-        colorwheelExtended = false;
+      colorwheelExtended = false;
     }
     else if (xbox->GetRawButton(6)){
-        colorwheelExtended = true;
+      colorwheelExtended = true;
     }
 
     if(colorwheelExtended){
-        xStickValue *= 0.5;
-        yStickValue *= 0.5;
+      xStickValue *= 0.5;
+      yStickValue *= 0.5;
     }
 
     if (stick->GetRawButton(2)) {
-        yStickValue = 0;
+      yStickValue = 0;
     }
+    /*if (xboxDrive->GetRawButton(1)) {
+      yStickValue = 0;
+    }*/
 
     robotDrive->ArcadeDrive(xStickValue, yStickValue);
 
@@ -99,6 +109,11 @@ void DriveManager::drive() {
 
     frc::SmartDashboard::PutNumber("left current", driveMotorLeft->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("right current", driveMotorRight->GetOutputCurrent());
+
+  if (stick->GetRawButton(5)) {
+    gyro->Reset();
+  }
+  frc::SmartDashboard::GetNumber("gyro angle", gyro->GetAngle());
 }
 
 void DriveManager::subclassTurn(double turnValue, double moveValue) { //allows different subclass to access drive system to turn robot (Ex vision tracking turns robot)
@@ -128,6 +143,8 @@ void DriveManager::autoPrep() {
   leftEncLast = driveMotorLeft->GetEncoder().GetPosition();
   rightEncLast = driveMotorRight->GetEncoder().GetPosition();
   gyroLast = gyro->GetAngle();
+
+  autoStep++;
 }
 
 void DriveManager::autoDrive(double distance){
@@ -147,10 +164,10 @@ void DriveManager::autoDrive(double distance){
 
   if (offset < 2){
     robotDrive->ArcadeDrive(0,0);
-      
+    autoStep++;
   }
   else {
-    autoStep++;
+    
   }
 
   frc::SmartDashboard::PutNumber("auto power", power);
@@ -166,4 +183,9 @@ void DriveManager::autoTurn(double angle) {
   turnCorrection = clampDrive(turnCorrection, -0.5, 0.5);
 
   robotDrive->ArcadeDrive(0, turnCorrection);
+
+  turnOffset = (gyro->GetAngle() - gyroLast) - angle;
+  if (turnOffset < 2) {
+    autoStep++;
+  }
 }

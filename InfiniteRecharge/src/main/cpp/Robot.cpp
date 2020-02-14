@@ -16,7 +16,7 @@ bool intakeRotateStartCompleted = false;
 int autoStep = 0;
 
 Robot::Robot() {
-  manipulatorManager = new ManipulatorManager();
+  //manipulatorManager = new ManipulatorManager();
   //driveManager = new DriveManager();
   //visionManager = new VisionManager();
   shooterManager = new ShooterManager();
@@ -129,7 +129,7 @@ void Robot::TeleopPeriodic() {
 	}*/
   
   //driveManager->drive();
-  manipulatorManager->intakeTest();
+  //manipulatorManager->intakeTest();
   shooterManager->shootTest();
 }
 
