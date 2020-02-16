@@ -17,6 +17,7 @@ ShooterManager::ShooterManager () {
     xbox = new frc::XboxController{1};
     hoodEncoder = new frc::DigitalInput(1);
     currentEncoderState = hoodEncoder->Get();
+    //hoodCount = new frc::Counter(hoodEncoder);
 }
 
 void ShooterManager::shoot(double velocityWant, double enabled) {
@@ -78,6 +79,17 @@ void ShooterManager::shootTest() {
         currentEncoderState = hoodEncoder->Get();
     }
     frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
+    frc::SmartDashboard::PutBoolean("hood boolean", currentEncoderState);
+    frc::SmartDashboard::PutNumber("hood rot", (hoodEncoderCount /179.0));
+
+   /* if (hoodMotor->Get() > 0) {
+        hoodPosition += hoodCount->Get();
+    }
+    else if (hoodMotor->Get() < 0) {
+        hoodPosition -= hoodCount->Get();
+    }
+    hoodCount->Reset();
+    frc::SmartDashboard::PutNumber("hood counter", hoodPosition);*/
 
     shootMotor->Set(xbox->GetRawAxis(5));
     //frc::SmartDashboard::PutNumber("shooter temp", shootMotor->GetTemperature());

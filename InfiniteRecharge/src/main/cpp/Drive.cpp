@@ -89,8 +89,8 @@ void DriveManager::drive() {
     }
 
     if(colorwheelExtended){
-      xStickValue *= 0.5;
-      yStickValue *= 0.5;
+      //xStickValue *= 0.5;
+      //yStickValue *= 0.5;
     }
 
     if (stick->GetRawButton(2)) {

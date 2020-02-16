@@ -12,14 +12,13 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 bool intakeRotateStart = true;
-bool intakeRotateStartCompleted = false;
 int autoStep = 0;
 
 Robot::Robot() {
-  //manipulatorManager = new ManipulatorManager();
-  //driveManager = new DriveManager();
+  manipulatorManager = new ManipulatorManager();
+  driveManager = new DriveManager();
   //visionManager = new VisionManager();
-  shooterManager = new ShooterManager();
+  //shooterManager = new ShooterManager();
   //climbManager = new ClimbManager();
   //autoManager = new AutoManager(driveManager);
 }  
@@ -128,9 +127,9 @@ void Robot::TeleopPeriodic() {
     //shooterManager->shoot(visionRPM, true);
 	}*/
   
-  //driveManager->drive();
-  //manipulatorManager->intakeTest();
-  shooterManager->shootTest();
+  driveManager->drive();
+  manipulatorManager->intakeTest();
+  //shooterManager->shootTest();
 }
 
 void Robot::TestPeriodic() {}

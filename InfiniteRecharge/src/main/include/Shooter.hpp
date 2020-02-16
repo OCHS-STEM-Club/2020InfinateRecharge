@@ -14,11 +14,13 @@ class ShooterManager {
     frc::XboxController *xbox;
 
     frc::DigitalInput *hoodEncoder;
+    //frc::Counter *hoodCount;
     
     double velocityOut;
     double velocityAct;
     bool currentEncoderState;
     int hoodEncoderCount = 0;
+    //int hoodPosition = 0;
 
     public:
     ShooterManager();

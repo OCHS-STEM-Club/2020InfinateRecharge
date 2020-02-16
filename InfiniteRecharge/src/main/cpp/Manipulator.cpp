@@ -1,5 +1,5 @@
 #include <Manipulator.hpp>
-//#include <Robot.h>
+#include <Robot.h>
 
 ManipulatorManager::ManipulatorManager () {
   m_colorMatcher.AddColorMatch(kBlueTarget);
@@ -10,8 +10,8 @@ ManipulatorManager::ManipulatorManager () {
   stick = new frc::Joystick{0};
   xbox = new frc::XboxController{1};
 
-  spinMotor = new WPI_TalonSRX(8);
-  spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
+  //spinMotor = new WPI_TalonSRX(8);
+  //spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 
   intakeRotateMotor = new rev::CANSparkMax(10, rev::CANSparkMax::MotorType::kBrushless);
   intakeSpinMotor = new WPI_TalonSRX(11);
@@ -20,8 +20,8 @@ ManipulatorManager::ManipulatorManager () {
   colorCount = 0;
   encStartRot = 0;
 
-  linActuator = new frc::Servo(9);
-  linActuator->SetBounds(2.0, 1.8, 1.0, 1.2, 1.0);
+  //linActuator = new frc::Servo(9);
+  //linActuator->SetBounds(2.0, 1.8, 1.0, 1.2, 1.0);
 
   intakePidController = new rev::CANPIDController(*intakeRotateMotor);
   intakePidController->SetP(0);
@@ -65,7 +65,7 @@ double deadbandM(double joystickValue, double deadbandValue) {
     } 
 }
 
-void ManipulatorManager::manualColorSpin() {
+/*void ManipulatorManager::manualColorSpin() {
     xStickValue = stick->GetRawAxis(1);
     //xStickValue = deadband(xStickValue,0.5);
 
@@ -75,9 +75,7 @@ void ManipulatorManager::manualColorSpin() {
 
     frc::Color detectedColor = m_colorSensor.GetColor();
 
-  /**
-   * Run the color match algorithm on our detected color
-   */
+
   std::string colorString;
   double confidence = 0.0;
   frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
@@ -94,10 +92,7 @@ void ManipulatorManager::manualColorSpin() {
     colorString = "Unknown";
   }
 
-  /**
-   * Open Smart Dashboard or Shuffleboard to see the color detected by the 
-   * sensor.
-   */
+
   frc::SmartDashboard::PutNumber("Red", detectedColor.red);
   frc::SmartDashboard::PutNumber("Green", detectedColor.green);
   frc::SmartDashboard::PutNumber("Blue", detectedColor.blue);
@@ -110,9 +105,7 @@ void ManipulatorManager::colorFinder() {
 
   frc::Color detectedColor = m_colorSensor.GetColor();
 
-  /**
-   * Run the color match algorithm on our detected color
-   */
+
   std::string colorString;
   double confidence = 0.0;
   frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
@@ -144,9 +137,6 @@ void ManipulatorManager::countSpins() {
 
   frc::Color detectedColor = m_colorSensor.GetColor();
 
-  /**
-   * Run the color match algorithm on our detected color
-   */
   std::string colorString;
   double confidence = 0.0;
   frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
@@ -182,7 +172,7 @@ void ManipulatorManager::countSpins() {
   }
 
   frc::SmartDashboard::PutString("Detected Color", colorString);
-}
+}*/
 
 /*void ManipulatorManager::countSpinsEnc(){
   currentEncRot = spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0;
@@ -219,6 +209,9 @@ void ManipulatorManager::intake() {
     //intakeRotateMotor->StopMotor();
     rotateControlMode = 2;
   }
+  //else if (xbox->GetPOV() == 270 && intakeButtonToggle) {
+  //  rotateControlMode = 3;
+  //}
   else {
     intakeButtonToggle = true;
   }
@@ -237,7 +230,7 @@ void ManipulatorManager::intake() {
 
 }
 
-void ManipulatorManager::linearActuator() {
+/*void ManipulatorManager::linearActuator() {
     if (xbox->GetRawButton(5)) {
     //linActuator->SetSpeed(1);
     linActuator->SetPosition(0);
@@ -246,26 +239,26 @@ void ManipulatorManager::linearActuator() {
     //linActuator->SetSpeed(-1);
     linActuator->SetPosition(1);
   }
-  /*else {
+  //else {
     //linActuator->SetSpeed(0);
     //linActuator->SetDisabled();
-  }*/
-}
+  //}
+}*/
 
 void ManipulatorManager::intakeTest() {
   intakeSpinMotor->Set(deadbandM(xbox->GetRawAxis(1), 0.2));
   frc::SmartDashboard::PutNumber("intake percent", intakeSpinMotor->Get());
 
-  //intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
-  //frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
-  //frc::SmartDashboard::PutNumber("intake rotate power", intakeRotateMotor->Get());
+  intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
+  frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
+  frc::SmartDashboard::PutNumber("intake rotate power", intakeRotateMotor->Get());
 }
 
 void ManipulatorManager::intakeStartup() {
-  if (false){//intakeRotateStart) {
+  if (intakeRotateStart) {
     timer->Reset();
     timer->Start();
-    //intakeRotateStart = false;
+    intakeRotateStart = false;
   }
 
   if (timer->Get() < 0.2) {
@@ -277,7 +270,7 @@ void ManipulatorManager::intakeStartup() {
     }
     else {
       intakeRotateMotor->Set(0);
-      //intakeRotateStartCompleted = true;
+      autoStep++;
     }
   }
 }

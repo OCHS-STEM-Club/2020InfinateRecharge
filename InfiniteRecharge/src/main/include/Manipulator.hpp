@@ -10,7 +10,7 @@
 
 class ManipulatorManager {
 private:
-    rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
+    //rev::ColorSensorV3 m_colorSensor{frc::I2C::Port::kOnboard};
     rev::ColorMatch m_colorMatcher;
     /*static constexpr frc::Color kBlueTarget = frc::Color(0.143, 0.427, 0.429);
     static constexpr frc::Color kGreenTarget = frc::Color(0.197, 0.561, 0.240);
@@ -25,12 +25,12 @@ private:
     frc::Joystick *stick;
     frc::XboxController *xbox;
 
-    WPI_TalonSRX *spinMotor;
+    //WPI_TalonSRX *spinMotor;
 
     rev::CANSparkMax *intakeRotateMotor;
     WPI_TalonSRX *intakeSpinMotor;
 
-    frc::Servo *linActuator;
+    //frc::Servo *linActuator;
 
     rev::CANPIDController *intakePidController;
 
