@@ -47,6 +47,7 @@ private:
 
     bool intakeButtonToggle = true;
     int rotateControlMode = 0;
+    double rotatePosition;
 
  public:
     ManipulatorManager();

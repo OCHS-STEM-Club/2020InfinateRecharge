@@ -27,6 +27,8 @@ class DriveManager {
 
     AHRS *gyro;
 
+    frc::Timer *autoTime;
+
     double xStickValue; //creates stick varibles
     double yStickValue;
 
@@ -53,4 +55,5 @@ class DriveManager {
     void autoDrive(double distance);
     void autoPrep();
     void autoTurn(double angle);
+    void autoBasic();
 }; 

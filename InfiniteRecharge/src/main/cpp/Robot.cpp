@@ -91,6 +91,7 @@ void Robot::AutonomousPeriodic() {
     //driveManager->autoDrive(1); 
   }
 
+  manipulatorManager->intakeStartup();
 }
 
 void Robot::TeleopInit() {} //Initalize Teleop
@@ -128,7 +129,8 @@ void Robot::TeleopPeriodic() {
 	}*/
   
   driveManager->drive();
-  manipulatorManager->intakeTest();
+  //manipulatorManager->intakeTest();
+  manipulatorManager->intake();
   //shooterManager->shootTest();
 }
 

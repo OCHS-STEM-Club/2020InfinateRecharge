@@ -34,6 +34,8 @@ DriveManager::DriveManager () {
     xbox = new frc::XboxController{1};
     //xboxDrive = new frc::XboxController{2};
 
+    autoTime = new frc::Timer();
+
   try{
 		gyro = new AHRS(SPI::Port::kMXP);
 	}
@@ -145,6 +147,9 @@ void DriveManager::autoPrep() {
   gyroLast = gyro->GetAngle();
 
   autoStep++;
+
+  autoTime->Reset();
+  autoTime->Start();
 }
 
 void DriveManager::autoDrive(double distance){
@@ -187,5 +192,14 @@ void DriveManager::autoTurn(double angle) {
   turnOffset = (gyro->GetAngle() - gyroLast) - angle;
   if (turnOffset < 2) {
     autoStep++;
+  }
+}
+
+void DriveManager::autoBasic() {
+  if (autoTime->Get() < 5) {
+    robotDrive->ArcadeDrive(0.4,0);
+  }
+  else {
+    robotDrive->ArcadeDrive(0,0);
   }
 }
