@@ -1,13 +1,22 @@
 #include <Autonomous.hpp>
+#include <Robot.h>
 
-AutoManager::AutoManager (DriveManager *drive) {
+AutoManager::AutoManager (DriveManager *drive, ManipulatorManager *manipulator) {
     this->driveManager = drive;
+    this->manipulatorManager = manipulator;
 }
 
 void AutoManager::testAuto() {
-    if(testToggle){
-        this->driveManager->autoPrep();
-        testToggle = false;
+    switch(autoStep) {
+        case 0:
+            this->manipulatorManager->intakeStartup();
+            break;
+        case 1:
+            this->driveManager->autoPrep();
+            break;
+        case 2:
+            this->driveManager->autoBasic();
+            break;
     }
-    this->driveManager->autoDrive(4);
+    frc::SmartDashboard::PutNumber("auto step", autoStep);
 }

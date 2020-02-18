@@ -69,8 +69,8 @@ double deadband(double joystickValue, double deadbandValue) { //colins special p
 }
 
 void DriveManager::drive() {
-    xStickValue = 0.75 *-deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
-    yStickValue = 0.6 * deadband(stick->GetRawAxis(2), 0.2);
+    xStickValue = -deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
+    yStickValue = deadband(stick->GetRawAxis(2), 0.2);
     //xStickValue = -xboxDrive->GetRawAxis(1) *0.8;
     //yStickValue = xboxDrive->GetRawAxis(4) *0.8;
 
@@ -82,6 +82,11 @@ void DriveManager::drive() {
       xStickValue *= 0.55;
       yStickValue *= 0.55;
     }*/
+
+    if (!stick->GetRawAxis(3)) {
+      xStickValue *= 0.75;
+      yStickValue *= 0.6;
+    }
 
     if(xbox->GetRawButton(5)){
       colorwheelExtended = false;

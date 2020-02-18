@@ -1,13 +1,14 @@
 #pragma once
 
 #include <Drive.hpp>
+#include <Manipulator.hpp>
 
 class AutoManager { 
     private:
     DriveManager *driveManager;
-    bool testToggle = true;
+    ManipulatorManager *manipulatorManager;
 
     public:
-    AutoManager(DriveManager *drive);
+    AutoManager(DriveManager *drive, ManipulatorManager *manipulator);
     void testAuto();
 };

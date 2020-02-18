@@ -20,7 +20,7 @@
 #include <Drive.hpp>
 //#include <vision.hpp>
 //#include <Shooter.hpp>
-//#include <Autonomous.hpp>
+#include <Autonomous.hpp>
 //#include <Climber.hpp>
 
 extern bool intakeRotateStart;
@@ -44,10 +44,10 @@ class Robot : public frc::TimedRobot {
   const std::string kAutoNameCustom = "My Auto";
   std::string m_autoSelected;
 
-  //AutoManager *autoManager;
   ManipulatorManager *manipulatorManager;
   DriveManager *driveManager;
   //VisionManager *visionManager;
   //ShooterManager *shooterManager;
   //ClimbManager *climbManager;
+  AutoManager *autoManager;
 };

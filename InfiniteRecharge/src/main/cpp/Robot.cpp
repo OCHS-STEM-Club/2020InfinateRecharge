@@ -20,7 +20,7 @@ Robot::Robot() {
   //visionManager = new VisionManager();
   //shooterManager = new ShooterManager();
   //climbManager = new ClimbManager();
-  //autoManager = new AutoManager(driveManager);
+  autoManager = new AutoManager(driveManager, manipulatorManager);
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
@@ -84,14 +84,9 @@ void Robot::AutonomousPeriodic() {
     // Default Auto goes here
   }
 
-  /*if (! intakeRotateStartCompleted) {
-    manipulatorManager->intakeStartup();
-  } */
-  if (false){//autoStep == 0) {
-    //driveManager->autoDrive(1); 
-  }
+  autoManager->testAuto();
 
-  if (autoStep == 0) {
+  /*if (autoStep == 0) {
     manipulatorManager->intakeStartup();
   }
   else if (autoStep == 1) {
@@ -106,7 +101,7 @@ void Robot::AutonomousPeriodic() {
   else {
     frc::SmartDashboard::PutBoolean("auto Complete", false);
   }
-  frc::SmartDashboard::PutNumber("auto step", autoStep);
+  frc::SmartDashboard::PutNumber("auto step", autoStep);*/
   
 }
 
