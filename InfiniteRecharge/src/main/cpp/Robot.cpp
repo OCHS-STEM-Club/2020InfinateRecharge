@@ -91,7 +91,23 @@ void Robot::AutonomousPeriodic() {
     //driveManager->autoDrive(1); 
   }
 
-  manipulatorManager->intakeStartup();
+  if (autoStep == 0) {
+    manipulatorManager->intakeStartup();
+  }
+  else if (autoStep == 1) {
+    driveManager->autoPrep();
+  }
+  else if (autoStep == 2) {
+    driveManager->autoBasic();
+  }
+  else if (autoStep == 3) {
+    frc::SmartDashboard::PutBoolean("auto Complete", true);
+  }
+  else {
+    frc::SmartDashboard::PutBoolean("auto Complete", false);
+  }
+  frc::SmartDashboard::PutNumber("auto step", autoStep);
+  
 }
 
 void Robot::TeleopInit() {} //Initalize Teleop

@@ -206,8 +206,8 @@ void ManipulatorManager::intake() {
   }
 
   if (xbox->GetPOV() == 0 && intakeButtonToggle) {
-    rotateControlMode = 1;
-    intakePidController->SetReference(0, rev::ControlType::kPosition);
+    //rotateControlMode = 1;
+    //intakePidController->SetReference(0, rev::ControlType::kPosition);
   }
   else if (xbox->GetPOV() == 180 && intakeButtonToggle) {
     //intakePidController->SetReference(0, rev::ControlType::kPosition);
@@ -217,17 +217,31 @@ void ManipulatorManager::intake() {
   else if (xbox->GetPOV() == 270 && intakeButtonToggle) {
     rotateControlMode = 3;
   }
+    else if (xbox->GetPOV() == 90 && intakeButtonToggle) {
+    rotateControlMode = 4;
+  }
   else {
     intakeButtonToggle = true;
   }
   
-
-  if (rotateControlMode == 2) {
-    rotatePosition = intakeRotateMotor->GetEncoder().GetPosition();
-    if (rotatePosition < 45 && rotatePosition > 25) { //replace 0 with desired location
-      intakeRotateMotor->Set(-0.008);
+  rotatePosition = intakeRotateMotor->GetEncoder().GetPosition();
+  if (rotateControlMode == 1) {
+    //intakeRotateMotor->Set(-0.01);
+    if (rotatePosition >14) {
+      intakeRotateMotor->Set(-0.01);
     }
-    else if (rotatePosition < 25) {
+    else if (rotatePosition){
+      intakeRotateMotor->Set(0.03);
+    }
+  }
+  if (rotateControlMode == 2) {
+    if (rotatePosition < 50 && rotatePosition > 25) { //replace 0 with desired location
+      intakeRotateMotor->Set(-0.00005);
+    }
+    else if (rotatePosition < 16) {
+      intakeRotateMotor->Set(0.04);
+    }
+    else if (rotatePosition < 20) {
       intakeRotateMotor->Set(-0.000);
     }
     else {
@@ -235,14 +249,26 @@ void ManipulatorManager::intake() {
     }
   }
   if (rotateControlMode == 3) {
+    if (rotatePosition > 45 && xbox->GetRawAxis(5) > 0) {
+      intakeRotateMotor->Set(0);
+    }
+    else {
+      intakeRotateMotor->Set(xbox->GetRawAxis(5) * 0.25);
+    }
 
-      intakeRotateMotor->Set(xbox->GetRawAxis(5));
+    if (rotatePosition < 14.4) {
+      rotateControlMode = 1;
+    }
+  }
+  if (rotateControlMode == 4) {
+    intakeRotateMotor->Set(xbox->GetRawAxis(5) * 0.25);
   }
 
   frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
   frc::SmartDashboard::PutNumber("intake rotate power", intakeRotateMotor->Get());
   frc::SmartDashboard::PutNumber("intake rotate current", intakeRotateMotor->GetOutputCurrent());
   frc::SmartDashboard::PutNumber("intake rotate temp", intakeRotateMotor->GetMotorTemperature());
+  frc::SmartDashboard::PutNumber("rotate control mode", rotateControlMode);
 }
 
 /*void ManipulatorManager::linearActuator() {
@@ -274,17 +300,21 @@ void ManipulatorManager::intakeTest() {
 void ManipulatorManager::intakeStartup() {
 
     rotatePosition = intakeRotateMotor->GetEncoder().GetPosition();
-    if (rotatePosition < 45 && rotatePosition > 25) { //replace 0 with desired location
-      intakeRotateMotor->Set(-0.008);
+    if (rotatePosition < 50 && rotatePosition > 25) { //replace 0 with desired location
+      intakeRotateMotor->Set(-0.00005);
     }
     else if (rotatePosition > -1 && rotatePosition < 15) {
       intakeRotateMotor->Set(0.08);
     }
-    else if (rotatePosition < 25) {
+    else if (rotatePosition < 20) {
       intakeRotateMotor->Set(-0.000);
     }
     else {
       intakeRotateMotor->Set(0);
+    }
+
+    if (rotatePosition > 45) {
+      autoStep++;
     }
 
       frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());

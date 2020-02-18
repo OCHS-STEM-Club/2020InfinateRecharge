@@ -69,18 +69,18 @@ double deadband(double joystickValue, double deadbandValue) { //colins special p
 }
 
 void DriveManager::drive() {
-    xStickValue = -deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
-    yStickValue = deadband(stick->GetRawAxis(2), 0.2);
-    //xStickValue = xboxDrive->GetRawAxis(1);
-    //yStickValue = xboxDrive->GetRawAxis(4);
+    xStickValue = 0.75 *-deadband(stick->GetRawAxis(1), 0.2); //getting raw axis values
+    yStickValue = 0.6 * deadband(stick->GetRawAxis(2), 0.2);
+    //xStickValue = -xboxDrive->GetRawAxis(1) *0.8;
+    //yStickValue = xboxDrive->GetRawAxis(4) *0.8;
 
     if(stick->GetRawButton(1)){
-      xStickValue *= 0.85;
-      yStickValue *= 0.85;
+      xStickValue *= 0.55;
+      yStickValue *= 0.55;
     }
     /*if (xboxDrive->GetRawAxis(3) > 0.9) {
-      xStickValue *= 0.85;
-      yStickValue *= 0.85;
+      xStickValue *= 0.55;
+      yStickValue *= 0.55;
     }*/
 
     if(xbox->GetRawButton(5)){
@@ -96,7 +96,8 @@ void DriveManager::drive() {
     }
 
     if (stick->GetRawButton(2)) {
-      yStickValue = 0;
+      xStickValue *= 0.35;
+      yStickValue *= 0.55;
     }
     /*if (xboxDrive->GetRawButton(1)) {
       yStickValue = 0;
@@ -111,10 +112,12 @@ void DriveManager::drive() {
 
     frc::SmartDashboard::PutNumber("left current", driveMotorLeft->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("right current", driveMotorRight->GetOutputCurrent());
+    frc::SmartDashboard::PutNumber("left Temp", driveMotorLeft->GetMotorTemperature());
+    frc::SmartDashboard::PutNumber("right Temp", driveMotorRight->GetMotorTemperature());
 
-  if (stick->GetRawButton(5)) {
-    gyro->Reset();
-  }
+  //if (stick->GetRawButton(5)) {
+  //  gyro->Reset();
+  //}
   frc::SmartDashboard::GetNumber("gyro angle", gyro->GetAngle());
 }
 
@@ -196,10 +199,16 @@ void DriveManager::autoTurn(double angle) {
 }
 
 void DriveManager::autoBasic() {
-  if (autoTime->Get() < 5) {
-    robotDrive->ArcadeDrive(0.4,0);
+  if (autoTime->Get() < 0.5) {
+    robotDrive->ArcadeDrive(0.5,0);
   }
   else {
     robotDrive->ArcadeDrive(0,0);
+    autoStep++;
   }
+
+  leftCurrentPos = driveMotorLeft->GetEncoder().GetPosition() - leftEncLast;
+  rightCurrentPos = driveMotorRight->GetEncoder().GetPosition() - rightEncLast;
+  frc::SmartDashboard::PutNumber("left pos", leftCurrentPos);
+  frc::SmartDashboard::PutNumber("right pos", rightCurrentPos);
 }
