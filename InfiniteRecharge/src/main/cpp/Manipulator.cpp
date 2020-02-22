@@ -10,7 +10,7 @@ ManipulatorManager::ManipulatorManager () {
   stick = new frc::Joystick{0};
   xbox = new frc::XboxController{1};
 
-  //spinMotor = new WPI_TalonSRX(8);
+  spinMotor = new WPI_TalonSRX(8);
   //spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 
   intakeRotateMotor = new rev::CANSparkMax(10, rev::CANSparkMax::MotorType::kBrushless);
@@ -22,8 +22,8 @@ ManipulatorManager::ManipulatorManager () {
   colorCount = 0;
   encStartRot = 0;
 
-  //linActuator = new frc::Servo(9);
-  //linActuator->SetBounds(2.0, 1.8, 1.0, 1.2, 1.0);
+  linActuator = new frc::Servo(0);
+  linActuator->SetBounds(2.0, 1.8, 1.0, 1.2, 1.0);
 
   intakePidController = new rev::CANPIDController(*intakeRotateMotor);
   intakePidController->SetP(0);
@@ -33,7 +33,7 @@ ManipulatorManager::ManipulatorManager () {
   //intakePidController->SetFF(0);
   intakePidController->SetOutputRange(1,-1);
 
-  timer = new frc::Timer();
+  timerM = new frc::Timer();
 	//timer->Start();
 }
 
@@ -67,11 +67,11 @@ double deadbandM(double joystickValue, double deadbandValue) {
     } 
 }
 
-/*void ManipulatorManager::manualColorSpin() {
-    xStickValue = stick->GetRawAxis(1);
+void ManipulatorManager::manualColorSpin() {
+    xStickValue = stick->GetRawAxis(5);
     //xStickValue = deadband(xStickValue,0.5);
 
-    spinMotor->Set(xStickValue);
+    //spinMotor->Set(xStickValue);
     frc::SmartDashboard::PutNumber("spin motor roations", spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0);
 
 
@@ -113,13 +113,13 @@ void ManipulatorManager::colorFinder() {
   frc::Color matchedColor = m_colorMatcher.MatchClosestColor(detectedColor, confidence);
 
   if (matchedColor == kBlueTarget) {
-    colorString = "B";
-  } else if (matchedColor == kRedTarget) {
     colorString = "R";
+  } else if (matchedColor == kRedTarget) {
+    colorString = "B";
   } else if (matchedColor == kGreenTarget) {
-    colorString = "G";
-  } else if (matchedColor == kYellowTarget) {
     colorString = "Y";
+  } else if (matchedColor == kYellowTarget) {
+    colorString = "G";
   } else {
     colorString = "Unknown";
   }
@@ -127,7 +127,7 @@ void ManipulatorManager::colorFinder() {
   frc::SmartDashboard::PutString("Detected Color", colorString);
 
   if (colorString != gameData) {
-    spinMotor->Set(0.2);
+    spinMotor->Set(0.225);
   }
   else {
     spinMotor->Set(0);
@@ -162,7 +162,7 @@ void ManipulatorManager::countSpins() {
     }
   }
 
-  if (stick->GetRawButton(10)) {
+  if (xbox->GetRawButton(10)) {
     colorCount = 0;
   }
 
@@ -174,7 +174,11 @@ void ManipulatorManager::countSpins() {
   }
 
   frc::SmartDashboard::PutString("Detected Color", colorString);
-}*/
+}
+
+void ManipulatorManager::stopWheel() {
+  spinMotor->Set(0);
+}
 
 /*void ManipulatorManager::countSpinsEnc(){
   currentEncRot = spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0;
@@ -196,10 +200,10 @@ void ManipulatorManager::countSpins() {
 void ManipulatorManager::intake() {
   //intakeSpinMotor->Set(deadbandM(xbox->GetRawAxis(1), 0.2));
   if (xbox->GetRawButton(1)) {
-    intakeSpinMotor->Set(-0.75);
+    intakeSpinMotor->Set(-0.8);
   }
   else if (xbox->GetRawButton(2)) {
-    intakeSpinMotor->Set(0.75);
+    intakeSpinMotor->Set(0.8);
   }
   else {
     intakeSpinMotor->Set(0);
@@ -227,21 +231,21 @@ void ManipulatorManager::intake() {
   rotatePosition = intakeRotateMotor->GetEncoder().GetPosition();
   if (rotateControlMode == 1) {
     //intakeRotateMotor->Set(-0.01);
-    if (rotatePosition >14) {
-      intakeRotateMotor->Set(-0.01);
+    if (rotatePosition > LOW_GOAL_HEIGHT) {
+      intakeRotateMotor->Set(-0.022);
     }
-    else if (rotatePosition){
+    else if (rotatePosition < (LOW_GOAL_HEIGHT - 0.4)){
       intakeRotateMotor->Set(0.03);
     }
   }
   if (rotateControlMode == 2) {
-    if (rotatePosition < 50 && rotatePosition > 25) { //replace 0 with desired location
+    if (rotatePosition < 42 && rotatePosition > 20) { //replace 0 with desired location
       intakeRotateMotor->Set(-0.00005);
     }
     else if (rotatePosition < 16) {
       intakeRotateMotor->Set(0.04);
     }
-    else if (rotatePosition < 20) {
+    else if (rotatePosition < 19) {
       intakeRotateMotor->Set(-0.000);
     }
     else {
@@ -249,19 +253,26 @@ void ManipulatorManager::intake() {
     }
   }
   if (rotateControlMode == 3) {
-    if (rotatePosition > 45 && xbox->GetRawAxis(5) > 0) {
+    /*if (rotatePosition > 45 && xbox->GetRawAxis(5) > 0) {
       intakeRotateMotor->Set(0);
     }
     else {
       intakeRotateMotor->Set(xbox->GetRawAxis(5) * 0.25);
+    }*/
+    if (rotatePosition > 14) {
+      intakeRotateMotor->Set(-0.19);
     }
+    else {
+      intakeRotateMotor->Set(-0.16);
+    }
+    
 
-    if (rotatePosition < 14.4) {
+    if (rotatePosition < LOW_GOAL_HEIGHT) {
       rotateControlMode = 1;
     }
   }
   if (rotateControlMode == 4) {
-    intakeRotateMotor->Set(xbox->GetRawAxis(5) * 0.25);
+    intakeRotateMotor->Set(xbox->GetRawAxis(5) * 0.4);
   }
 
   frc::SmartDashboard::PutNumber("intake rotate encoder", intakeRotateMotor->GetEncoder().GetPosition());
@@ -271,23 +282,23 @@ void ManipulatorManager::intake() {
   frc::SmartDashboard::PutNumber("rotate control mode", rotateControlMode);
 }
 
-/*void ManipulatorManager::linearActuator() {
-    if (xbox->GetRawButton(5)) {
+void ManipulatorManager::linearActuator() {
+  if (xbox->GetRawButton(5)) {
     //linActuator->SetSpeed(1);
     linActuator->SetPosition(0);
   }
   else if (xbox->GetRawButton(6)) {
     //linActuator->SetSpeed(-1);
-    linActuator->SetPosition(1);
+    linActuator->SetPosition(0.95);
   }
   //else {
     //linActuator->SetSpeed(0);
     //linActuator->SetDisabled();
   //}
-}*/
+}
 
 void ManipulatorManager::intakeTest() {
-  intakeSpinMotor->Set(deadbandM(xbox->GetRawAxis(1), 0.2));
+  intakeSpinMotor->Set(0.5 * deadbandM(xbox->GetRawAxis(1), 0.2));
   frc::SmartDashboard::PutNumber("intake percent", intakeSpinMotor->Get());
 
   intakeRotateMotor->Set(deadbandM(xbox->GetRawAxis(5), 0.2));
@@ -300,7 +311,7 @@ void ManipulatorManager::intakeTest() {
 void ManipulatorManager::intakeStartup() {
 
     rotatePosition = intakeRotateMotor->GetEncoder().GetPosition();
-    if (rotatePosition < 50 && rotatePosition > 25) { //replace 0 with desired location
+    if (rotatePosition < 42 && rotatePosition > 22) { //replace 0 with desired location
       intakeRotateMotor->Set(-0.00005);
     }
     else if (rotatePosition > -1 && rotatePosition < 15) {
@@ -321,4 +332,45 @@ void ManipulatorManager::intakeStartup() {
   frc::SmartDashboard::PutNumber("intake rotate power", intakeRotateMotor->Get());
   frc::SmartDashboard::PutNumber("intake rotate current", intakeRotateMotor->GetOutputCurrent());
   frc::SmartDashboard::PutNumber("intake rotate temp", intakeRotateMotor->GetMotorTemperature());
+}
+
+void ManipulatorManager::intakeAutoStart() {
+  timerM->Reset();
+  timerM->Start();
+  autoStep++;
+}
+
+void ManipulatorManager::intakeAuto(double duration) {
+  if (duration > timerM->Get()) {
+    intakeSpinMotor->Set(0.8);
+  }
+  else {
+    intakeSpinMotor->Set(0);
+    autoStep++;
+  }
+}
+
+void ManipulatorManager::intakeAutoHeight(bool sustainHeight) {
+  rotatePosition = intakeRotateMotor->GetEncoder().GetPosition();
+  if (!sustainHeight) {
+    if (rotatePosition > LOW_GOAL_HEIGHT) {
+      intakeRotateMotor->Set(-0.022);
+    }
+    else if (rotatePosition < (LOW_GOAL_HEIGHT - 0.3)){
+      intakeRotateMotor->Set(0.08);
+    }
+  }
+
+  if ((rotatePosition > LOW_GOAL_HEIGHT) && !sustainHeight) {
+    autoStep++;
+  }
+
+  if (sustainHeight) {
+    if (rotatePosition > LOW_GOAL_HEIGHT) {
+      intakeRotateMotor->Set(-0.022);
+    }
+    else if (rotatePosition < (LOW_GOAL_HEIGHT - 0.4)){
+      intakeRotateMotor->Set(0.03);
+    }
+  }
 }

@@ -145,7 +145,7 @@ double VisionManager::trackMove() {
   if (tv == 1) {
     moveOutput = (targetArea - moveWant) * DRIVE_K;
     moveOutput = clamp(moveOutput, -MAX_DRIVE,MAX_DRIVE);
-    return moveOutput;
+    return -moveOutput;
   }
   else {
     return 0;

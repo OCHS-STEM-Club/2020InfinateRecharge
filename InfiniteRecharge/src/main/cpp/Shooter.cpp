@@ -10,12 +10,13 @@ ShooterManager::ShooterManager () {
 	//shootMotor->Config_kP(0, 0, 10);
 	//shootMotor->Config_kI(0, 0, 10);
 	//shootMotor->Config_kD(0, 0, 10);
+    shootMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
 
     hoodMotor = new WPI_TalonSRX(14);
 
     feederMotor = new WPI_TalonSRX(13);
     xbox = new frc::XboxController{1};
-    hoodEncoder = new frc::DigitalInput(1);
+    hoodEncoder = new frc::DigitalInput(0);
     currentEncoderState = hoodEncoder->Get();
     //hoodCount = new frc::Counter(hoodEncoder);
 }
@@ -57,17 +58,18 @@ void ShooterManager::hoodRotate(double hoodPosition){
 }
 
 void ShooterManager::shootTest() {
-    if (xbox->GetRawButton(4)) { //fix button later
-        feederMotor->Set(0.8);
+
+
+    //hoodMotor->Set(xbox->GetRawAxis(1));
+    if (xbox->GetRawAxis(2) > 0.9) {
+        hoodMotor->Set(0.6);
     }
-    else if (xbox->GetRawButton(3)) {
-        feederMotor->Set(-0.8);
+    else if (xbox->GetRawAxis(3) > 0.9) {
+        hoodMotor->Set(-0.6);
     }
     else {
-        feederMotor->Set(0);
+        hoodMotor->Set(0);
     }
-
-    hoodMotor->Set(xbox->GetRawAxis(1));
 
     if (currentEncoderState != hoodEncoder->Get()){
         if (hoodMotor->Get() > 0){
@@ -91,7 +93,37 @@ void ShooterManager::shootTest() {
     hoodCount->Reset();
     frc::SmartDashboard::PutNumber("hood counter", hoodPosition);*/
 
-    shootMotor->Set(xbox->GetRawAxis(5));
+    //shootMotor->Set(1.1 * xbox->GetRawAxis(1));
+
+if (xbox->GetRawButton(4)) {
+    shootMotor->Set(-1);
+}
+else {
+    shootMotor->Set(0);
+}
+
     //frc::SmartDashboard::PutNumber("shooter temp", shootMotor->GetTemperature());
     frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetQuadratureVelocity());
+    frc::SmartDashboard::PutNumber("shoot position", shootMotor->GetSensorCollection().GetQuadraturePosition());
+    frc::SmartDashboard::PutNumber("shoot power", shootMotor->Get());
+    frc::SmartDashboard::PutNumber("shoot voltage", -shootMotor->GetMotorOutputVoltage());
+    
+
+    if (116000 > -shootMotor->GetSensorCollection().GetQuadratureVelocity()) {
+        frc::SmartDashboard::PutBoolean("shoot ready", false);
+        feederMotor->Set(0);
+    }
+    else {
+        frc::SmartDashboard::PutBoolean("shoot ready", true);
+
+        if (xbox->GetRawButton(4)) { //fix button later
+            //feederMotor->Set(0.8);
+        }
+        if (xbox->GetRawButton(3)) {
+            feederMotor->Set(-0.8);
+        }
+        else {
+            feederMotor->Set(0);
+        }
+    }
 }

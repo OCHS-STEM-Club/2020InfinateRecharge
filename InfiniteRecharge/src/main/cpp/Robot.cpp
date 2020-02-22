@@ -17,20 +17,21 @@ int autoStep = 0;
 Robot::Robot() {
   manipulatorManager = new ManipulatorManager();
   driveManager = new DriveManager();
-  //visionManager = new VisionManager();
-  //shooterManager = new ShooterManager();
+  visionManager = new VisionManager();
+  shooterManager = new ShooterManager();
   //climbManager = new ClimbManager();
   autoManager = new AutoManager(driveManager, manipulatorManager);
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
 frc::XboxController *xbox;
+frc::Timer *timer;
 
 double visionMove;
 double visionTurn;
 double visionRPM;
 
-
+int autoSelect = 0;
 void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
@@ -38,6 +39,7 @@ void Robot::RobotInit() {
 
   stick = new frc::Joystick{0}; //Assigning the joystick to USB port 0 on the driver station
   xbox = new frc::XboxController{1};
+  timer = new frc::Timer();
 
 }
 
@@ -49,7 +51,10 @@ void Robot::RobotInit() {
  * <p> This runs after the mode specific periodic functions, but before
  * LiveWindow and SmartDashboard integrated updating.
  */
-void Robot::RobotPeriodic() {}
+void Robot::RobotPeriodic() {
+  //frc::SmartDashboard::PutNumber("auto select", 0);
+  //frc::SmartDashboard::PutNumber("auto delay", 0);
+}
 
 /**
  * This autonomous (along with the chooser code above) shows how to select
@@ -75,6 +80,8 @@ void Robot::AutonomousInit() {
   }
 
   //driveManager->autoPrep();
+  timer->Reset();
+  timer->Start();
 }
 
 void Robot::AutonomousPeriodic() {
@@ -83,33 +90,28 @@ void Robot::AutonomousPeriodic() {
   } else {
     // Default Auto goes here
   }
+  
+  autoSelect = frc::SmartDashboard::GetNumber("auto select", 0);
+  if (timer->Get() > frc::SmartDashboard::GetNumber("auto delay", 0)) {
+    if (autoSelect == 1) {
+      autoManager->lowDeposit();
+    }
+    else if (autoSelect == 2) {
+      autoManager->testAuto();
+    }
+  
 
-  autoManager->testAuto();
-
-  /*if (autoStep == 0) {
-    manipulatorManager->intakeStartup();
   }
-  else if (autoStep == 1) {
-    driveManager->autoPrep();
-  }
-  else if (autoStep == 2) {
-    driveManager->autoBasic();
-  }
-  else if (autoStep == 3) {
-    frc::SmartDashboard::PutBoolean("auto Complete", true);
-  }
-  else {
-    frc::SmartDashboard::PutBoolean("auto Complete", false);
-  }
-  frc::SmartDashboard::PutNumber("auto step", autoStep);*/
   
 }
 
-void Robot::TeleopInit() {} //Initalize Teleop
+void Robot::TeleopInit() {
+  timer->Stop();
+} //Initalize Teleop
 
 void Robot::TeleopPeriodic() {
-  
- /* if (xbox->GetRawButton(7)) {
+  manipulatorManager->linearActuator();
+  if (xbox->GetRawButton(7)) {
     manipulatorManager->colorFinder();
   }
   else if (xbox->GetRawButton(8)) {
@@ -120,6 +122,7 @@ void Robot::TeleopPeriodic() {
   //}
   else {
     manipulatorManager->manualColorSpin();
+    manipulatorManager->stopWheel();
   }
 
   visionManager->display(); //runs vision manager once teleop starts
@@ -135,14 +138,14 @@ void Robot::TeleopPeriodic() {
     //visionRPM = ?;
 
     //driveManager->driveTrain(visionMove, visionTurn, true);
-    driveManager->subclassTurn(visionTurn, visionMove);
+    driveManager->subclassTurn(visionTurn, -(0.5 * stick->GetRawAxis(1)));
     //shooterManager->shoot(visionRPM, true);
-	}*/
+	}
   
-  driveManager->drive();
+  //driveManager->drive();
   //manipulatorManager->intakeTest();
   manipulatorManager->intake();
-  //shooterManager->shootTest();
+  shooterManager->shootTest();
 }
 
 void Robot::TestPeriodic() {}

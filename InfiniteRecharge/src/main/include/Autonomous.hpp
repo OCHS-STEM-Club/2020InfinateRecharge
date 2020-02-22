@@ -11,4 +11,5 @@ class AutoManager {
     public:
     AutoManager(DriveManager *drive, ManipulatorManager *manipulator);
     void testAuto();
+    void lowDeposit();
 };

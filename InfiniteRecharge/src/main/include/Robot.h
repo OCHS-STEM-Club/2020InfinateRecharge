@@ -18,8 +18,8 @@
 
 #include <Manipulator.hpp>
 #include <Drive.hpp>
-//#include <vision.hpp>
-//#include <Shooter.hpp>
+#include <vision.hpp>
+#include <Shooter.hpp>
 #include <Autonomous.hpp>
 //#include <Climber.hpp>
 
@@ -46,8 +46,8 @@ class Robot : public frc::TimedRobot {
 
   ManipulatorManager *manipulatorManager;
   DriveManager *driveManager;
-  //VisionManager *visionManager;
-  //ShooterManager *shooterManager;
+  VisionManager *visionManager;
+  ShooterManager *shooterManager;
   //ClimbManager *climbManager;
   AutoManager *autoManager;
 };

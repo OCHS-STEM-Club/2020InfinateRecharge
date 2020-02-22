@@ -131,10 +131,10 @@ void DriveManager::subclassTurn(double turnValue, double moveValue) { //allows d
 }
 
 double distanceToRev(double in){
-    in *= 12;
-    in /= 18.84;
-    in *= 7.18;
-    return in;
+  in *= 12;
+  in /= 18.84;
+  in *= 7.18;
+  return in;
 }
 
 double clampDrive(double in,double minval,double maxval) {
@@ -166,29 +166,32 @@ void DriveManager::autoDrive(double distance){
 
   revNeed = distanceToRev(distance);
 
-  avgPosition = (leftCurrentPos + rightCurrentPos) / 2.0;
-  offset = revNeed - avgPosition;
+  avgPosition = (leftCurrentPos - rightCurrentPos) / 2.0;
+  if (distance>0) {
+    offset = revNeed - avgPosition;
+  }
+  else if (distance<0) {
+    offset = -(revNeed - avgPosition);
+  }
 
-  power = offset / (revNeed / 2);
-  power = clampDrive(power,-0.2,0.2);
+  power = offset / (revNeed / 18.0);
+  power = clampDrive(power,-0.3,0.3);
 
   turnCorrection = (gyro->GetAngle() - gyroLast) * TURN_K;
   robotDrive->ArcadeDrive(power, 0);
 
-  if (offset < 2){
+  if (offset < 0.2){
     robotDrive->ArcadeDrive(0,0);
     autoStep++;
   }
-  else {
-    
-  }
+  
 
-  frc::SmartDashboard::PutNumber("auto power", power);
+  /*frc::SmartDashboard::PutNumber("auto power", power);
   frc::SmartDashboard::PutNumber("offset", offset);
   frc::SmartDashboard::PutNumber("rev want", revNeed);
   frc::SmartDashboard::PutNumber("avg position", avgPosition);
   frc::SmartDashboard::PutNumber("left pos", leftCurrentPos);
-  frc::SmartDashboard::PutNumber("right pos", rightCurrentPos);
+  frc::SmartDashboard::PutNumber("right pos", rightCurrentPos);*/
 }
 
 void DriveManager::autoTurn(double angle) {
