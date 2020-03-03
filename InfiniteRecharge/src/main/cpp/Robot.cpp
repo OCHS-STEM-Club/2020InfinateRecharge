@@ -20,7 +20,7 @@ Robot::Robot() {
   visionManager = new VisionManager();
   shooterManager = new ShooterManager();
   //climbManager = new ClimbManager();
-  autoManager = new AutoManager(driveManager, manipulatorManager);
+  autoManager = new AutoManager(driveManager, manipulatorManager, shooterManager);
 }  
 
 frc::Joystick *stick; //Initialzing the joystick
@@ -99,8 +99,25 @@ void Robot::AutonomousPeriodic() {
     else if (autoSelect == 2) {
       autoManager->testAuto();
     }
-  
-
+    else if (autoSelect == 3) {
+      autoManager->lowDepositOffset(1);
+    }
+    else if (autoSelect == 4) {
+      autoManager->lowDepositOffset(-1); 
+    }
+    else if (autoSelect == 5) {
+      autoManager->lowDepositLong();
+    }
+    else if (autoSelect == 6) {
+      autoManager->shootMiddle(1, false);
+    }
+    else if (autoSelect == 7) {
+      autoManager->shootMiddle(-1, true);
+    }
+    else if (autoSelect == 8) {
+      autoManager->shootMiddle(-1, false);
+    }
+ 
   }
   
 }
@@ -111,6 +128,7 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {
   manipulatorManager->linearActuator();
+
   if (xbox->GetRawButton(7)) {
     manipulatorManager->colorFinder();
   }
@@ -138,7 +156,8 @@ void Robot::TeleopPeriodic() {
     //visionRPM = ?;
 
     //driveManager->driveTrain(visionMove, visionTurn, true);
-    driveManager->subclassTurn(visionTurn, -(0.5 * stick->GetRawAxis(1)));
+    //driveManager->subclassTurn(visionTurn, -(0.5 * stick->GetRawAxis(1)));
+    driveManager->subclassTurn(visionTurn, visionMove);
     //shooterManager->shoot(visionRPM, true);
 	}
   

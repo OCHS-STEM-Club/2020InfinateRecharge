@@ -52,7 +52,7 @@ void setLED(std::string color) {
 void VisionManager::display() {
   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
 
-  table->PutNumber("pipeline", 1);
+  table->PutNumber("pipeline", 3);
   frc::SmartDashboard::PutBoolean("has target", table->GetNumber("tv", 0.0));
 
   double targetOffsetAngle_Horizontal = table->GetNumber("tx",0.0);

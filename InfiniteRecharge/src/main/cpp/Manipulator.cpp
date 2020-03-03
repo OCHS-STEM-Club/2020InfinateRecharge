@@ -22,7 +22,7 @@ ManipulatorManager::ManipulatorManager () {
   colorCount = 0;
   encStartRot = 0;
 
-  linActuator = new frc::Servo(0);
+  linActuator = new frc::Servo(2);
   linActuator->SetBounds(2.0, 1.8, 1.0, 1.2, 1.0);
 
   intakePidController = new rev::CANPIDController(*intakeRotateMotor);
@@ -72,7 +72,7 @@ void ManipulatorManager::manualColorSpin() {
     //xStickValue = deadband(xStickValue,0.5);
 
     //spinMotor->Set(xStickValue);
-    frc::SmartDashboard::PutNumber("spin motor roations", spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0);
+    //aq  frc::SmartDashboard::PutNumber("spin motor roations", spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0);
 
 
     frc::Color detectedColor = m_colorSensor.GetColor();
@@ -104,6 +104,7 @@ void ManipulatorManager::manualColorSpin() {
 
 void ManipulatorManager::colorFinder() {
   gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
+  frc::SmartDashboard::PutString("colorToFind", gameData);
 
   frc::Color detectedColor = m_colorSensor.GetColor();
 
@@ -157,7 +158,7 @@ void ManipulatorManager::countSpins() {
 
   if (currentColor != colorString) {
     currentColor = colorString;
-    if (currentColor == "Y") {
+    if (currentColor == "R") {
       colorCount++;
     }
   }
@@ -167,7 +168,7 @@ void ManipulatorManager::countSpins() {
   }
 
   if (colorCount < 7) {
-    spinMotor->Set(0.4);
+    spinMotor->Set(0.6);
   }
   else {
     spinMotor->Set(0);
@@ -289,7 +290,7 @@ void ManipulatorManager::linearActuator() {
   }
   else if (xbox->GetRawButton(6)) {
     //linActuator->SetSpeed(-1);
-    linActuator->SetPosition(0.95);
+    linActuator->SetPosition(0.65);
   }
   //else {
     //linActuator->SetSpeed(0);
@@ -324,7 +325,7 @@ void ManipulatorManager::intakeStartup() {
       intakeRotateMotor->Set(0);
     }
 
-    if (rotatePosition > 45) {
+    if (rotatePosition > 42) {
       autoStep++;
     }
 
@@ -340,9 +341,12 @@ void ManipulatorManager::intakeAutoStart() {
   autoStep++;
 }
 
-void ManipulatorManager::intakeAuto(double duration) {
-  if (duration > timerM->Get()) {
+void ManipulatorManager::intakeAuto(double duration, bool outTrue) {
+  if (outTrue && (duration > timerM->Get() || duration == -1)) {
     intakeSpinMotor->Set(0.8);
+  }
+  else if (!outTrue && (duration > timerM->Get() || duration == -1)) {
+    intakeSpinMotor->Set(-0.8);
   }
   else {
     intakeSpinMotor->Set(0);
@@ -373,4 +377,19 @@ void ManipulatorManager::intakeAutoHeight(bool sustainHeight) {
       intakeRotateMotor->Set(0.03);
     }
   }
+}
+
+void ManipulatorManager::holdIntake() {
+  intakeRotateMotor->Set(-0.00005);
+}
+
+void ManipulatorManager::autoTimer(double sec) {
+  if (timerM->Get() > sec) {
+    autoStep++;
+  }
+}
+
+void ManipulatorManager::stopIntake() {
+  intakeSpinMotor->Set(0);
+  autoStep++;
 }

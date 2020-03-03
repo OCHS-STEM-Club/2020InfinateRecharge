@@ -18,10 +18,10 @@ private:
     static constexpr frc::Color kRedTarget = frc::Color(0.561, 0.232, 0.114);
     static constexpr frc::Color kYellowTarget = frc::Color(0.361, 0.524, 0.113); */
 
-    static constexpr frc::Color kBlueTarget = frc::Color(0.375, 0.438, 0.188);
-    static constexpr frc::Color kGreenTarget = frc::Color(0.429, 0.429, 0.143);
-    static constexpr frc::Color kRedTarget = frc::Color(0.599, 0.319, 0.079);
-    static constexpr frc::Color kYellowTarget = frc::Color(0.512, 0.415, 0.073);
+    static constexpr frc::Color kBlueTarget = frc::Color(0.221, 0.435, 0.344);
+    static constexpr frc::Color kGreenTarget = frc::Color(0.234, 0.519, 0.207);
+    static constexpr frc::Color kRedTarget = frc::Color(0.596, 0.308, 0.096);
+    static constexpr frc::Color kYellowTarget = frc::Color(0.409, 0.427, 0.095);
 
     frc::Joystick *stick;
     frc::XboxController *xbox;
@@ -61,7 +61,10 @@ private:
     void linearActuator();
     void intakeTest();
     void intakeStartup();
-    void intakeAuto(double duration);
+    void intakeAuto(double duration, bool outTrue);
     void intakeAutoStart();
     void intakeAutoHeight(bool sustainHeight);
+    void holdIntake();
+    void autoTimer(double sec);
+    void stopIntake();
 };

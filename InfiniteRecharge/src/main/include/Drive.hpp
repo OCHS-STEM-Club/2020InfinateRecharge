@@ -5,7 +5,7 @@
 #include <AHRS.h>
 //#include <Robot.h>
 
-#define TURN_K -0.5
+#define TURN_K 0.012 //0.4
 
 class DriveManager { 
     private:
@@ -56,4 +56,5 @@ class DriveManager {
     void autoPrep();
     void autoTurn(double angle);
     void autoBasic();
+    void zeroDrive();
 }; 

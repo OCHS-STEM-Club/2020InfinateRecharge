@@ -22,10 +22,14 @@ class ShooterManager {
     int hoodEncoderCount = 0;
     //int hoodPosition = 0;
 
+    double velocityWant;
+
     public:
     ShooterManager();
     void shoot(double velocityWant, double enabled);
     void hoodRotate(double hoodPosition);
     void shootTest();
+    void shootAuto();
+    void stopShoot();
 
 };

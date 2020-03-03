@@ -1,16 +1,18 @@
 #include <Shooter.hpp>
+#include <Robot.h>
 
 ShooterManager::ShooterManager () {
     shootMotor = new WPI_TalonSRX(12);
     //shootMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
     //shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
-    //shootMotor->SetSensorPhase(true);
+    //shootMotor->SetSensorPhase(false);
 	//shootMotor->SetInverted(false);
 	//shootMotor->ConfigAllowableClosedloopError(0, 0, 10);
-	//shootMotor->Config_kP(0, 0, 10);
+	//shootMotor->Config_kP(0, 1, 10);
 	//shootMotor->Config_kI(0, 0, 10);
 	//shootMotor->Config_kD(0, 0, 10);
     shootMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+    
 
     hoodMotor = new WPI_TalonSRX(14);
 
@@ -80,9 +82,9 @@ void ShooterManager::shootTest() {
         }
         currentEncoderState = hoodEncoder->Get();
     }
-    frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
-    frc::SmartDashboard::PutBoolean("hood boolean", currentEncoderState);
-    frc::SmartDashboard::PutNumber("hood rot", (hoodEncoderCount /179.0));
+    //frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
+    //frc::SmartDashboard::PutBoolean("hood boolean", currentEncoderState);
+    //frc::SmartDashboard::PutNumber("hood rot", (hoodEncoderCount /179.0));
 
    /* if (hoodMotor->Get() > 0) {
         hoodPosition += hoodCount->Get();
@@ -93,23 +95,25 @@ void ShooterManager::shootTest() {
     hoodCount->Reset();
     frc::SmartDashboard::PutNumber("hood counter", hoodPosition);*/
 
-    //shootMotor->Set(1.1 * xbox->GetRawAxis(1));
+    velocityWant = frc::SmartDashboard::GetNumber("shoot position", 87500); //97000
 
-if (xbox->GetRawButton(4)) {
-    shootMotor->Set(-1);
-}
-else {
-    shootMotor->Set(0);
-}
+    if (xbox->GetRawButton(4)) {
+       shootMotor->Set((velocityWant * 1.0) / -120000.0);
+       //shootMotor->Set(ControlMode::Velocity, -50000);
+    }
+    else {
+        shootMotor->Set(1.1 * xbox->GetRawAxis(1));
+    }
 
     //frc::SmartDashboard::PutNumber("shooter temp", shootMotor->GetTemperature());
     frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetQuadratureVelocity());
-    frc::SmartDashboard::PutNumber("shoot position", shootMotor->GetSensorCollection().GetQuadraturePosition());
+    //frc::SmartDashboard::PutNumber("shoot position", shootMotor->GetSensorCollection().GetQuadraturePosition());
     frc::SmartDashboard::PutNumber("shoot power", shootMotor->Get());
     frc::SmartDashboard::PutNumber("shoot voltage", -shootMotor->GetMotorOutputVoltage());
+    frc::SmartDashboard::PutNumber("shooter current", shootMotor->GetOutputCurrent());
     
 
-    if (116000 > -shootMotor->GetSensorCollection().GetQuadratureVelocity()) {
+    if (100000 > -shootMotor->GetSensorCollection().GetQuadratureVelocity()) {
         frc::SmartDashboard::PutBoolean("shoot ready", false);
         feederMotor->Set(0);
     }
@@ -126,4 +130,28 @@ else {
             feederMotor->Set(0);
         }
     }
+
+    if (xbox->GetPOV() == 0) {
+        feederMotor->Set(-0.8);
+    }
+}
+
+void ShooterManager::shootAuto() {
+    shootMotor->Set((88000 * 1.0) / -120000.0);
+
+    velocityAct = -shootMotor->GetSensorCollection().GetQuadratureVelocity();
+    if (velocityAct > 89000) {
+        feederMotor->Set(-0.8);
+    }
+    else {
+        feederMotor->Set(0);
+    }
+
+    frc::SmartDashboard::PutNumber("shooter velocity", shootMotor->GetSensorCollection().GetQuadratureVelocity());
+}
+
+void ShooterManager::stopShoot() {
+    shootMotor->Set(0);
+    feederMotor->Set(0);
+    autoStep++;
 }

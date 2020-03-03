@@ -36,10 +36,10 @@ DriveManager::DriveManager () {
 
     autoTime = new frc::Timer();
 
-  try{
+  try {
 		gyro = new AHRS(SPI::Port::kMXP);
 	}
-	catch(std::exception ex){
+	catch(std::exception ex) {
 		std::string err_string = "Error initalizing navX-MXP: ";
 		err_string += ex.what();
 		DriverStation::ReportError(err_string.c_str());
@@ -75,7 +75,7 @@ void DriveManager::drive() {
     //yStickValue = xboxDrive->GetRawAxis(4) *0.8;
 
     if(stick->GetRawButton(1)){
-      xStickValue *= 0.55;
+      xStickValue *= 0.70;
       yStickValue *= 0.55;
     }
     /*if (xboxDrive->GetRawAxis(3) > 0.9) {
@@ -101,8 +101,8 @@ void DriveManager::drive() {
     }
 
     if (stick->GetRawButton(2)) {
-      xStickValue *= 0.35;
-      yStickValue *= 0.55;
+      xStickValue *= 0.50;
+      yStickValue *= 0.45;
     }
     /*if (xboxDrive->GetRawButton(1)) {
       yStickValue = 0;
@@ -112,18 +112,18 @@ void DriveManager::drive() {
 
     frc::SmartDashboard::PutNumber("left encoder", driveMotorLeft->GetEncoder().GetPosition()); //getting motor controller data and putting it on smart dashboard
     frc::SmartDashboard::PutNumber("right encoder", driveMotorLeft->GetEncoder().GetPosition());
-    frc::SmartDashboard::PutNumber("left velocity", driveMotorLeft->GetEncoder().GetVelocity());
-    frc::SmartDashboard::PutNumber("right velocity", driveMotorLeft->GetEncoder().GetVelocity());
+    //frc::SmartDashboard::PutNumber("left velocity", driveMotorLeft->GetEncoder().GetVelocity());
+    //frc::SmartDashboard::PutNumber("right velocity", driveMotorLeft->GetEncoder().GetVelocity());
 
     frc::SmartDashboard::PutNumber("left current", driveMotorLeft->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("right current", driveMotorRight->GetOutputCurrent());
     frc::SmartDashboard::PutNumber("left Temp", driveMotorLeft->GetMotorTemperature());
     frc::SmartDashboard::PutNumber("right Temp", driveMotorRight->GetMotorTemperature());
 
-  //if (stick->GetRawButton(5)) {
-  //  gyro->Reset();
-  //}
-  frc::SmartDashboard::GetNumber("gyro angle", gyro->GetAngle());
+  if (stick->GetRawButton(5)) {
+    gyro->Reset();
+  }
+  frc::SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());
 }
 
 void DriveManager::subclassTurn(double turnValue, double moveValue) { //allows different subclass to access drive system to turn robot (Ex vision tracking turns robot)
@@ -150,6 +150,9 @@ double clampDrive(double in,double minval,double maxval) {
 }
 
 void DriveManager::autoPrep() {
+  gyro->Reset();
+  gyro->ZeroYaw();
+
   leftEncLast = driveMotorLeft->GetEncoder().GetPosition();
   rightEncLast = driveMotorRight->GetEncoder().GetPosition();
   gyroLast = gyro->GetAngle();
@@ -175,7 +178,7 @@ void DriveManager::autoDrive(double distance){
   }
 
   power = offset / (revNeed / 18.0);
-  power = clampDrive(power,-0.3,0.3);
+  power = clampDrive(power,-0.5,0.5);
 
   turnCorrection = (gyro->GetAngle() - gyroLast) * TURN_K;
   robotDrive->ArcadeDrive(power, 0);
@@ -195,15 +198,24 @@ void DriveManager::autoDrive(double distance){
 }
 
 void DriveManager::autoTurn(double angle) {
-  turnCorrection = ((gyro->GetAngle() - gyroLast) - angle) * TURN_K;
-  turnCorrection = clampDrive(turnCorrection, -0.5, 0.5);
+  turnCorrection = (angle - gyro->GetAngle()) * TURN_K;
+  turnCorrection = clampDrive(turnCorrection, -0.4, 0.4);
 
   robotDrive->ArcadeDrive(0, turnCorrection);
 
-  turnOffset = (gyro->GetAngle() - gyroLast) - angle;
-  if (turnOffset < 2) {
+  turnOffset = angle - gyro->GetAngle();
+
+  if (turnOffset < 0) {
+    turnOffset = -turnOffset;
+  }
+
+  if (turnOffset < 5) {
+    robotDrive->ArcadeDrive(0,0);
     autoStep++;
   }
+
+  frc::SmartDashboard::PutNumber("turn offset", turnOffset);
+  frc::SmartDashboard::PutNumber("gyro angle", gyro->GetAngle());
 }
 
 void DriveManager::autoBasic() {
@@ -217,6 +229,10 @@ void DriveManager::autoBasic() {
 
   leftCurrentPos = driveMotorLeft->GetEncoder().GetPosition() - leftEncLast;
   rightCurrentPos = driveMotorRight->GetEncoder().GetPosition() - rightEncLast;
-  frc::SmartDashboard::PutNumber("left pos", leftCurrentPos);
-  frc::SmartDashboard::PutNumber("right pos", rightCurrentPos);
+  //frc::SmartDashboard::PutNumber("left pos", leftCurrentPos);
+  //frc::SmartDashboard::PutNumber("right pos", rightCurrentPos);
+}
+
+void DriveManager::zeroDrive() {
+  robotDrive->ArcadeDrive(0,0);
 }
