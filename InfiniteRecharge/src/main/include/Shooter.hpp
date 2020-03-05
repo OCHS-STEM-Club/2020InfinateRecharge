@@ -15,12 +15,13 @@ class ShooterManager {
 
     frc::DigitalInput *hoodEncoder;
     //frc::Counter *hoodCount;
+    frc::AnalogPotentiometer *hoodPotent;
     
     double velocityOut;
     double velocityAct;
-    bool currentEncoderState;
-    int hoodEncoderCount = 0;
-    //int hoodPosition = 0;
+    //bool currentEncoderState;
+    //int hoodEncoderCount = 0;
+    int hoodPosition;
 
     double velocityWant;
 

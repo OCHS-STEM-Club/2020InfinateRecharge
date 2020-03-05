@@ -19,7 +19,7 @@ Robot::Robot() {
   driveManager = new DriveManager();
   visionManager = new VisionManager();
   shooterManager = new ShooterManager();
-  //climbManager = new ClimbManager();
+  climbManager = new ClimbManager();
   autoManager = new AutoManager(driveManager, manipulatorManager, shooterManager);
 }  
 
@@ -164,7 +164,8 @@ void Robot::TeleopPeriodic() {
   //driveManager->drive();
   //manipulatorManager->intakeTest();
   manipulatorManager->intake();
-  shooterManager->shootTest();
+  //shooterManager->shootTest();
+  climbManager->climbTest();
 }
 
 void Robot::TestPeriodic() {}

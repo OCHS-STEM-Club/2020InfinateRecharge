@@ -6,10 +6,14 @@
 class ClimbManager { 
     private:
     WPI_TalonFX *climbMotor;
+    WPI_TalonSRX *extendMotor;
     frc::XboxController *xbox;
     //frc::XboxController *driveXbox;
-    //frc::Joystick *stick;
+    frc::Joystick *stick;
+
     int pov;
+    double winchPower;
+
     public:
     ClimbManager();
     void climb();

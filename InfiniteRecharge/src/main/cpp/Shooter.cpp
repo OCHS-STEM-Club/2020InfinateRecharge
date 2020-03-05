@@ -18,9 +18,11 @@ ShooterManager::ShooterManager () {
 
     feederMotor = new WPI_TalonSRX(13);
     xbox = new frc::XboxController{1};
-    hoodEncoder = new frc::DigitalInput(0);
-    currentEncoderState = hoodEncoder->Get();
+    //hoodEncoder = new frc::DigitalInput(0);
+    //currentEncoderState = hoodEncoder->Get();
     //hoodCount = new frc::Counter(hoodEncoder);
+
+    hoodPotent = new frc::AnalogPotentiometer(0, 3600, 0);
 }
 
 void ShooterManager::shoot(double velocityWant, double enabled) {
@@ -45,8 +47,8 @@ void ShooterManager::shoot(double velocityWant, double enabled) {
     }
 }
 
-void ShooterManager::hoodRotate(double hoodPosition){
-    if (currentEncoderState != hoodEncoder->Get()){
+void ShooterManager::hoodRotate(double hoodPositionWant){
+    /*if (currentEncoderState != hoodEncoder->Get()){
         if (hoodMotor->Get() > 0){
             hoodEncoderCount++;
         }
@@ -54,9 +56,10 @@ void ShooterManager::hoodRotate(double hoodPosition){
             hoodEncoderCount--;
         }
         currentEncoderState = hoodEncoder->Get();
-    }
+    }*/
     
-    hoodMotor->Set((hoodPosition - hoodEncoderCount) * 0.05);
+    hoodPosition = hoodPotent->Get();
+    hoodMotor->Set((hoodPositionWant -hoodPosition) * 0.05);
 }
 
 void ShooterManager::shootTest() {
@@ -64,36 +67,16 @@ void ShooterManager::shootTest() {
 
     //hoodMotor->Set(xbox->GetRawAxis(1));
     if (xbox->GetRawAxis(2) > 0.9) {
-        hoodMotor->Set(0.6);
+        hoodMotor->Set(0.4);
     }
     else if (xbox->GetRawAxis(3) > 0.9) {
-        hoodMotor->Set(-0.6);
+        hoodMotor->Set(-0.4);
     }
     else {
         hoodMotor->Set(0);
     }
 
-    if (currentEncoderState != hoodEncoder->Get()){
-        if (hoodMotor->Get() > 0){
-            hoodEncoderCount++;
-        }
-        else {
-            hoodEncoderCount--;
-        }
-        currentEncoderState = hoodEncoder->Get();
-    }
-    //frc::SmartDashboard::PutNumber("hood encoder", hoodEncoderCount);
-    //frc::SmartDashboard::PutBoolean("hood boolean", currentEncoderState);
-    //frc::SmartDashboard::PutNumber("hood rot", (hoodEncoderCount /179.0));
-
-   /* if (hoodMotor->Get() > 0) {
-        hoodPosition += hoodCount->Get();
-    }
-    else if (hoodMotor->Get() < 0) {
-        hoodPosition -= hoodCount->Get();
-    }
-    hoodCount->Reset();
-    frc::SmartDashboard::PutNumber("hood counter", hoodPosition);*/
+    frc::SmartDashboard::PutNumber("hood position", hoodPotent->Get());
 
     velocityWant = frc::SmartDashboard::GetNumber("shoot position", 87500); //97000
 
