@@ -98,16 +98,20 @@ void VisionManager::display() {
   led->SetData(ledBuffer);
 }
 
-
-void VisionManager::distance() {
+double VisionManager::distance() {
   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
   double targetArea = table->GetNumber("ta",0.0);
 
   //rawDistance = targetArea * AREADISTANCERATIO;
-  rawDistance = (targetArea * -1.31) +12.8;
-  frc::SmartDashboard::PutNumber("raw distance", rawDistance);
+  //rawDistance = (targetArea * -1.31) +12.8;
+  //frc::SmartDashboard::PutNumber("raw distance", rawDistance);
   //distanceFlat = sqrt(pow(rawDistance, 2) - pow(8.1875,2));
   //frc::SmartDashboard::PutNumber("target distance", distanceFlat);
+
+  rawDistance = (targetArea * -1.31) +12.8;
+  frc::SmartDashboard::PutNumber("velocity calc", rawDistance);
+
+  return rawDistance;
 }
 
 double clamp(double in,double minval,double maxval) {
@@ -141,6 +145,8 @@ double VisionManager::trackMove() {
   std::shared_ptr<NetworkTable> table = nt::NetworkTableInstance::GetDefault().GetTable("limelight");
   double targetArea = table->GetNumber("ta",0.0);
   double tv = table->GetNumber("tv",0.0);
+
+  moveWant = frc::SmartDashboard::GetNumber("ta want", 2.34);
 
   if (tv == 1) {
     moveOutput = (targetArea - moveWant) * DRIVE_K;

@@ -21,7 +21,7 @@
 #include <vision.hpp>
 #include <Shooter.hpp>
 #include <Autonomous.hpp>
-//#include <Climber.hpp>
+#include <Climber.hpp>
 
 extern bool intakeRotateStart;
 extern bool intakeRotateStartCompleted;
@@ -48,6 +48,6 @@ class Robot : public frc::TimedRobot {
   DriveManager *driveManager;
   VisionManager *visionManager;
   ShooterManager *shooterManager;
-  //ClimbManager *climbManager;
+  ClimbManager *climbManager;
   AutoManager *autoManager;
 };

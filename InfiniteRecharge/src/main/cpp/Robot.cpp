@@ -19,7 +19,7 @@ Robot::Robot() {
   driveManager = new DriveManager();
   visionManager = new VisionManager();
   shooterManager = new ShooterManager();
-  //climbManager = new ClimbManager();
+  climbManager = new ClimbManager();
   autoManager = new AutoManager(driveManager, manipulatorManager, shooterManager);
 }  
 
@@ -54,6 +54,7 @@ void Robot::RobotInit() {
 void Robot::RobotPeriodic() {
   //frc::SmartDashboard::PutNumber("auto select", 0);
   //frc::SmartDashboard::PutNumber("auto delay", 0);
+  frc::SmartDashboard::PutNumber("ta want", 0);
 }
 
 /**

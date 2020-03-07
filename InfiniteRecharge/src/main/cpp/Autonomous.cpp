@@ -178,7 +178,7 @@ void AutoManager::shootMiddle(int foward1, bool turnaround) {
         this->driveManager->zeroDrive();
         break;
     case 2:
-        this->shooterManager->shootAuto();
+        this->shooterManager->shootAuto(true);
         this->driveManager->zeroDrive();
         this->manipulatorManager->autoTimer(4);
         break;

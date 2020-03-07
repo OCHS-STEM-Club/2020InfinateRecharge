@@ -27,23 +27,27 @@ ShooterManager::ShooterManager () {
     hoodPotent = new frc::AnalogPotentiometer(1, 1000, 0); //3600
 }
 
-void ShooterManager::shoot(double velocityWant, double enabled) {
+void ShooterManager::shoot(double velocityIn, double enabled) {
     velocityAct = shootMotor->GetSensorCollection().GetQuadratureVelocity();
-    frc::SmartDashboard::PutNumber("shooter rpm", velocityAct);
+    frc::SmartDashboard::PutNumber("shooter velocity", velocityAct);
 
-    if (enabled) {
-        shootMotor->Set(ControlMode::Velocity, velocityWant); //replace 0 with correct
+    if (xbox->GetRawButton(4)) {
+        velocityWant = velocityIn;
+        if (0 != frc::SmartDashboard::GetNumber("shoot position", 0)) {
+            velocityWant = frc::SmartDashboard::GetNumber("shoot position", 0);
+        }
+        shootMotor->Set(ControlMode::Velocity, -velocityWant); //replace 0 with correct
     }
-    else {
+    else if (xbox->GetRawButton(3)) {
         shootMotor->Set(0);
     }
 
-    if ((velocityAct - velocityWant) < 20 && xbox->GetRawButton(12) ) { //fix button later and allowable error
-        feederMotor->Set(0.2);
-    }
-    /*else if (xbox->GetRawButton(12)) { //fix button later
+    /*if ((velocityAct - velocityIn) < 20 && xbox->GetRawButton(12) ) { //fix button later and allowable error
         feederMotor->Set(0.2);
     }*/
+    if (xbox->GetPOV() == 0) { //fix button later
+        feederMotor->Set(-0.8);
+    }
     else {
         feederMotor->Set(0); 
     }
@@ -98,7 +102,7 @@ void ShooterManager::shootTest() {
     frc::SmartDashboard::PutNumber("shooter current", shootMotor->GetOutputCurrent());
     
 
-    if (100000 > -shootMotor->GetSensorCollection().GetQuadratureVelocity()) {
+    /*if (100000 > -shootMotor->GetSensorCollection().GetQuadratureVelocity()) {
         frc::SmartDashboard::PutBoolean("shoot ready", false);
         feederMotor->Set(0);
     }
@@ -114,18 +118,21 @@ void ShooterManager::shootTest() {
         else {
             feederMotor->Set(0);
         }
-    }
+    }*/
 
     if (xbox->GetPOV() == 0) {
         feederMotor->Set(-0.8);
     }
+    else {
+        feederMotor->Set(0);
+    }
 }
 
-void ShooterManager::shootAuto() {
+void ShooterManager::shootAuto(bool doShoot) {
     shootMotor->Set((88000 * 1.0) / -120000.0);
 
     velocityAct = -shootMotor->GetSensorCollection().GetQuadratureVelocity();
-    if (velocityAct > 89000) {
+    if (velocityAct > 89000 && doShoot) {
         feederMotor->Set(-0.8);
     }
     else {

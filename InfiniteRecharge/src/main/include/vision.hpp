@@ -7,7 +7,7 @@
 
 #define AREA_DISTANCE_RATIO 4.1823379 //2.11249
 #define MAX_STEER 0.4 // the maximum value sent to steer the robot
-#define STEER_K 0.125
+#define STEER_K 0.175
 #define DRIVE_K 1.35
 #define MAX_DRIVE 0.5
 
@@ -25,7 +25,7 @@ double distanceFlat;
 
 double turnOutput;
 double moveOutput;
-double moveWant = 0.88; //1.88
+double moveWant = 2.34; //0.88 trench
 
 frc::AddressableLED *led;
 
@@ -34,7 +34,7 @@ frc::AddressableLED *led;
 public: //Everything below is made accessable
     VisionManager();
     void display();
-    void distance();
+    double distance();
     double trackTurn();
     double trackMove();
 };
