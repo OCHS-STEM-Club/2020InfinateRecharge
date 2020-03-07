@@ -4,14 +4,16 @@
 ShooterManager::ShooterManager () {
     shootMotor = new WPI_TalonSRX(12);
     //shootMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
-    //shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
-    //shootMotor->SetSensorPhase(false);
-	//shootMotor->SetInverted(false);
+    shootMotor->ConfigSelectedFeedbackSensor(FeedbackDevice::CTRE_MagEncoder_Relative, 0, 10);
+    shootMotor->SetSensorPhase(false);
+	shootMotor->SetInverted(false);
 	//shootMotor->ConfigAllowableClosedloopError(0, 0, 10);
-	//shootMotor->Config_kP(0, 1, 10);
-	//shootMotor->Config_kI(0, 0, 10);
-	//shootMotor->Config_kD(0, 0, 10);
+	shootMotor->Config_kP(0, 0.06, 10); //0.04
+	shootMotor->Config_kI(0, 0.0, 10); //0.04
+	shootMotor->Config_kD(0, 0.001, 10); //0.001
     shootMotor->SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Coast);
+    shootMotor->ConfigPeakOutputForward(0, 10);
+    shootMotor->ConfigClosedloopRamp(1, 10);
     
 
     hoodMotor = new WPI_TalonSRX(14);
@@ -22,7 +24,7 @@ ShooterManager::ShooterManager () {
     //currentEncoderState = hoodEncoder->Get();
     //hoodCount = new frc::Counter(hoodEncoder);
 
-    hoodPotent = new frc::AnalogPotentiometer(0, 3600, 0);
+    hoodPotent = new frc::AnalogPotentiometer(1, 1000, 0); //3600
 }
 
 void ShooterManager::shoot(double velocityWant, double enabled) {
@@ -67,10 +69,10 @@ void ShooterManager::shootTest() {
 
     //hoodMotor->Set(xbox->GetRawAxis(1));
     if (xbox->GetRawAxis(2) > 0.9) {
-        hoodMotor->Set(0.4);
+        hoodMotor->Set(0.5);
     }
     else if (xbox->GetRawAxis(3) > 0.9) {
-        hoodMotor->Set(-0.4);
+        hoodMotor->Set(-0.5);
     }
     else {
         hoodMotor->Set(0);
@@ -81,10 +83,10 @@ void ShooterManager::shootTest() {
     velocityWant = frc::SmartDashboard::GetNumber("shoot position", 87500); //97000
 
     if (xbox->GetRawButton(4)) {
-       shootMotor->Set((velocityWant * 1.0) / -120000.0);
-       //shootMotor->Set(ControlMode::Velocity, -50000);
+       //shootMotor->Set((velocityWant * 1.0) / -120000.0);
+       shootMotor->Set(ControlMode::Velocity, -velocityWant);
     }
-    else {
+    else if (xbox->GetRawButton(3)) {
         shootMotor->Set(1.1 * xbox->GetRawAxis(1));
     }
 

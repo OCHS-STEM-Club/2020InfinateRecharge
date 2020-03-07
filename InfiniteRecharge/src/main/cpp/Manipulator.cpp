@@ -10,7 +10,7 @@ ManipulatorManager::ManipulatorManager () {
   stick = new frc::Joystick{0};
   xbox = new frc::XboxController{1};
 
-  spinMotor = new WPI_TalonSRX(8);
+  //spinMotor = new WPI_TalonSRX(8);
   //spinMotor->GetSensorCollection().SetQuadraturePosition(0, 10);
 
   intakeRotateMotor = new rev::CANSparkMax(10, rev::CANSparkMax::MotorType::kBrushless);
@@ -102,7 +102,7 @@ void ManipulatorManager::manualColorSpin() {
   frc::SmartDashboard::PutString("Detected Color", colorString);
 }
 
-void ManipulatorManager::colorFinder() {
+/*void ManipulatorManager::colorFinder() {
   gameData = frc::DriverStation::GetInstance().GetGameSpecificMessage();
   frc::SmartDashboard::PutString("colorToFind", gameData);
 
@@ -179,7 +179,7 @@ void ManipulatorManager::countSpins() {
 
 void ManipulatorManager::stopWheel() {
   spinMotor->Set(0);
-}
+}*/
 
 /*void ManipulatorManager::countSpinsEnc(){
   currentEncRot = spinMotor->GetSensorCollection().GetQuadraturePosition() / 4096.0;

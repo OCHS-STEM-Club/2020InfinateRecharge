@@ -26,7 +26,7 @@ private:
     frc::Joystick *stick;
     frc::XboxController *xbox;
 
-    WPI_TalonSRX *spinMotor;
+    //WPI_TalonSRX *spinMotor;
 
     rev::CANSparkMax *intakeRotateMotor;
     WPI_TalonSRX *intakeSpinMotor;

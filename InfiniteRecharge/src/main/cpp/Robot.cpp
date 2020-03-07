@@ -19,7 +19,7 @@ Robot::Robot() {
   driveManager = new DriveManager();
   visionManager = new VisionManager();
   shooterManager = new ShooterManager();
-  climbManager = new ClimbManager();
+  //climbManager = new ClimbManager();
   autoManager = new AutoManager(driveManager, manipulatorManager, shooterManager);
 }  
 
@@ -130,42 +130,48 @@ void Robot::TeleopPeriodic() {
   manipulatorManager->linearActuator();
 
   if (xbox->GetRawButton(7)) {
-    manipulatorManager->colorFinder();
+    //manipulatorManager->colorFinder();
   }
   else if (xbox->GetRawButton(8)) {
-    manipulatorManager->countSpins();
+    //manipulatorManager->countSpins();
   }
   //else if (stick->GetRawButton(8)){
   //  manipulatorManager->countSpinsEnc();
   //}
   else {
     manipulatorManager->manualColorSpin();
-    manipulatorManager->stopWheel();
+    //manipulatorManager->stopWheel();
   }
 
   visionManager->display(); //runs vision manager once teleop starts
   //visionManager->distance(); //runs vision manager once teleop starts
   
-  if (!stick->GetRawButton(12)) {
+  if (!stick->GetRawButton(12) && !stick->GetRawButton(11)) {
 		driveManager->drive();//0, 0, false);
-    shooterManager->shoot(0, false);
+    //shooterManager->shoot(0, false);
 	}
+  else if (stick->GetRawButton(11)) {
+    visionTurn = visionManager->trackTurn();
+    visionMove = visionManager->trackMove();
+
+    driveManager->subclassTurn(visionTurn, visionMove);
+  }
 	else {
 		visionTurn = visionManager->trackTurn();
     visionMove = visionManager->trackMove();
     //visionRPM = ?;
 
     //driveManager->driveTrain(visionMove, visionTurn, true);
-    //driveManager->subclassTurn(visionTurn, -(0.5 * stick->GetRawAxis(1)));
-    driveManager->subclassTurn(visionTurn, visionMove);
+    driveManager->subclassTurn(visionTurn, -(0.5 * stick->GetRawAxis(1)));
+    //driveManager->subclassTurn(visionTurn, visionMove);
     //shooterManager->shoot(visionRPM, true);
 	}
   
   //driveManager->drive();
   //manipulatorManager->intakeTest();
   manipulatorManager->intake();
-  //shooterManager->shootTest();
-  climbManager->climbTest();
+  shooterManager->shootTest();
+  //climbManager->climbTest();
 }
 
 void Robot::TestPeriodic() {}
