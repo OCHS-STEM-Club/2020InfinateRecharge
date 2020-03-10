@@ -60,7 +60,7 @@ void ClimbManager::climbTest() {
     }*/
 
     climbMotor->Set(ControlMode::PercentOutput, xbox->GetRawAxis(1));
-    extendMotor->Set(0.15 * xbox->GetRawAxis(5));
+    extendMotor->Set(0.35 * xbox->GetRawAxis(5));
 
     frc::SmartDashboard::PutNumber("extend power", extendMotor->Get());
     frc::SmartDashboard::PutNumber("winch power", climbMotor->Get());

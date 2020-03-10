@@ -171,8 +171,8 @@ void Robot::TeleopPeriodic() {
   //driveManager->drive();
   //manipulatorManager->intakeTest();
   manipulatorManager->intake();
-  shooterManager->shootTest();
-  //climbManager->climbTest();
+  //shooterManager->shootTest();
+  climbManager->climbTest();
 }
 
 void Robot::TestPeriodic() {}
