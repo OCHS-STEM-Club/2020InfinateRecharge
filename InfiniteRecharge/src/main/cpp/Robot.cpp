@@ -168,11 +168,12 @@ void Robot::TeleopPeriodic() {
     //shooterManager->shoot(visionRPM, true);
 	}
   
+  visionRPM = visionManager->distance();
   //driveManager->drive();
   //manipulatorManager->intakeTest();
   manipulatorManager->intake();
-  //shooterManager->shootTest();
-  climbManager->climbTest();
+  shooterManager->shootTest(visionRPM);
+  //climbManager->climbTest();
 }
 
 void Robot::TestPeriodic() {}

@@ -68,7 +68,7 @@ void ShooterManager::hoodRotate(double hoodPositionWant){
     hoodMotor->Set((hoodPositionWant -hoodPosition) * 0.05);
 }
 
-void ShooterManager::shootTest() {
+void ShooterManager::shootTest(double in) {
 
 
     //hoodMotor->Set(xbox->GetRawAxis(1));
@@ -89,6 +89,9 @@ void ShooterManager::shootTest() {
     if (xbox->GetRawButton(4)) {
        //shootMotor->Set((velocityWant * 1.0) / -120000.0);
        shootMotor->Set(ControlMode::Velocity, -velocityWant);
+    }
+    else if (xbox->GetRawButton(8)) {
+        shootMotor->Set(ControlMode::Velocity, -in);
     }
     else if (xbox->GetRawButton(3)) {
         shootMotor->Set(1.1 * xbox->GetRawAxis(1));

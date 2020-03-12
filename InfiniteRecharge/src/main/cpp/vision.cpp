@@ -108,7 +108,7 @@ double VisionManager::distance() {
   //distanceFlat = sqrt(pow(rawDistance, 2) - pow(8.1875,2));
   //frc::SmartDashboard::PutNumber("target distance", distanceFlat);
 
-  rawDistance = (targetArea * -1.31) +12.8;
+  rawDistance = (targetArea * -4752.0) + 121947; //* -4752.0) + 124947
   frc::SmartDashboard::PutNumber("velocity calc", rawDistance);
 
   return rawDistance;

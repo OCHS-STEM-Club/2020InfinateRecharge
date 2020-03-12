@@ -29,7 +29,7 @@ class ShooterManager {
     ShooterManager();
     void shoot(double velocityIn, double enabled);
     void hoodRotate(double hoodPosition);
-    void shootTest();
+    void shootTest(double in);
     void shootAuto(bool doShoot);
     void stopShoot();
 
